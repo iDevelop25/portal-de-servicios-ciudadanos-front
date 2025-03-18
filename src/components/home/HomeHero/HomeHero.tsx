@@ -49,24 +49,10 @@ function HomeHero() {
 					</div>
 				))}
 
-				{/* Navegación del slider */}
-				<div className="absolute inset-x-0 bottom-4 flex justify-center gap-2 z-10">
-					{slides.map((_, idx) => (
-						<button
-							key={idx}
-							className={`h-1.5 rounded-full transition-all ${
-								idx === currentSlide ? "w-8 bg-govco-warning" : "w-3 bg-white"
-							}`}
-							onClick={() => setCurrentSlide(idx)}
-							aria-label={`Ir a slide ${idx + 1}`}
-						></button>
-					))}
-				</div>
-
-				{/* Botones laterales */}
+				{/* Botones laterales - Aumentando z-index para garantizar que funcionen */}
 				<button
 					onClick={prevSlide}
-					className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 p-2 rounded-full z-10 transition-all focus:outline-none focus:ring-2 focus:ring-govco-primary"
+					className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 p-2 rounded-full z-30 transition-all focus:outline-none focus:ring-2 focus:ring-govco-primary"
 					aria-label="Slide anterior"
 				>
 					<svg
@@ -86,7 +72,7 @@ function HomeHero() {
 				</button>
 				<button
 					onClick={nextSlide}
-					className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 p-2 rounded-full z-10 transition-all focus:outline-none focus:ring-2 focus:ring-govco-primary"
+					className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 p-2 rounded-full z-30 transition-all focus:outline-none focus:ring-2 focus:ring-govco-primary"
 					aria-label="Slide siguiente"
 				>
 					<svg
@@ -104,6 +90,20 @@ function HomeHero() {
 						/>
 					</svg>
 				</button>
+
+				{/* Navegación del slider - Movido arriba del texto de ayuda */}
+				<div className="absolute bottom-20 sm:bottom-24 md:bottom-28 inset-x-0 flex justify-center gap-2 z-20">
+					{slides.map((_, idx) => (
+						<button
+							key={idx}
+							className={`h-1.5 rounded-full transition-all ${
+								idx === currentSlide ? "w-8 bg-govco-warning" : "w-3 bg-white"
+							}`}
+							onClick={() => setCurrentSlide(idx)}
+							aria-label={`Ir a slide ${idx + 1}`}
+						></button>
+					))}
+				</div>
 			</div>
 
 			{/* Título y subtítulo - Posicionamiento mejorado */}

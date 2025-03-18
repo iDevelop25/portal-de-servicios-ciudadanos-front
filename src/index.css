@@ -78,63 +78,6 @@ body {
 	line-height: 1.5;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: var(--font-govco-primary);
-	font-weight: 700;
-	margin-bottom: 1rem;
-}
-
-h1 {
-	font-size: 2.25rem;
-	line-height: 2.75rem;
-}
-
-h2 {
-	font-size: 1.875rem;
-	line-height: 2.25rem;
-}
-
-h3 {
-	font-size: 1.5rem;
-	line-height: 1.75rem;
-}
-
-h4 {
-	font-size: 1.25rem;
-	line-height: 1.5rem;
-}
-
-h5 {
-	font-size: 1.125rem;
-	line-height: 1.375rem;
-}
-
-h6 {
-	font-size: 1rem;
-	line-height: 1.25rem;
-}
-
-p {
-	margin-bottom: 1rem;
-	font-family: var(--font-govco-secondary);
-}
-
-a {
-	color: var(--color-govco-primary);
-	text-decoration: none;
-	transition: color 0.3s ease;
-}
-
-a:hover {
-	color: var(--color-govco-secondary);
-	text-decoration: underline;
-}
-
 /* Utilidades para colores GOV.CO */
 .bg-govco-primary {
 	background-color: var(--color-govco-primary);

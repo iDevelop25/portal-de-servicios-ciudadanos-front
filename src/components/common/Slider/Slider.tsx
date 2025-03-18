@@ -16,9 +16,11 @@ function Slider({
 	showIndicators = true,
 	height = "300px", // Altura reducida un 40%
 	className = "",
-}: SliderProps) {
+	indicatorPosition = "bottom-4", // Nueva prop para posicionar los indicadores
+}: SliderProps & { indicatorPosition?: string }) {
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [isAutoplayActive, setIsAutoplayActive] = useState(autoplayInterval > 0)
+	const [direction, setDirection] = useState(0)
 
 	// Cálculo del slide actual
 	const currentSlide = slides[currentIndex]
@@ -27,6 +29,7 @@ function Slider({
 	const goToPrevious = useCallback(() => {
 		const isFirstSlide = currentIndex === 0
 		const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1
+		setDirection(-1)
 		setCurrentIndex(newIndex)
 	}, [currentIndex, slides.length])
 
@@ -34,11 +37,13 @@ function Slider({
 	const goToNext = useCallback(() => {
 		const isLastSlide = currentIndex === slides.length - 1
 		const newIndex = isLastSlide ? 0 : currentIndex + 1
+		setDirection(1)
 		setCurrentIndex(newIndex)
 	}, [currentIndex, slides.length])
 
 	// Función para ir a un slide específico
 	const goToSlide = (slideIndex: number) => {
+		setDirection(slideIndex > currentIndex ? 1 : -1)
 		setCurrentIndex(slideIndex)
 	}
 
@@ -72,10 +77,12 @@ function Slider({
 		center: {
 			x: 0,
 			opacity: 1,
+			zIndex: 1,
 		},
 		exit: (direction: number) => ({
 			x: direction < 0 ? "100%" : "-100%",
 			opacity: 0,
+			zIndex: 0,
 		}),
 	}
 
@@ -90,10 +97,10 @@ function Slider({
 			onMouseLeave={handleMouseLeave}
 		>
 			{/* Slides con animaciones */}
-			<AnimatePresence initial={false} custom={currentIndex}>
+			<AnimatePresence initial={false} mode="wait" custom={direction}>
 				<motion.div
 					key={currentIndex}
-					custom={currentIndex}
+					custom={direction}
 					variants={slideVariants}
 					initial="enter"
 					animate="center"
@@ -119,14 +126,14 @@ function Slider({
 				<>
 					<button
 						onClick={goToPrevious}
-						className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full focus:outline-none transition-all z-10"
+						className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full focus:outline-none transition-all z-30"
 						aria-label="Slide anterior"
 					>
 						<ChevronLeft size={24} />
 					</button>
 					<button
 						onClick={goToNext}
-						className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full focus:outline-none transition-all z-10"
+						className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full focus:outline-none transition-all z-30"
 						aria-label="Slide siguiente"
 					>
 						<ChevronRight size={24} />
@@ -134,9 +141,11 @@ function Slider({
 				</>
 			)}
 
-			{/* Indicadores de posición */}
+			{/* Indicadores de posición - ahora con posición personalizable */}
 			{showIndicators && slides.length > 1 && (
-				<div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+				<div
+					className={`absolute ${indicatorPosition} left-0 right-0 flex justify-center gap-2 z-20`}
+				>
 					{slides.map((slide, slideIndex) => (
 						<button
 							key={slide.id}
@@ -144,7 +153,7 @@ function Slider({
 							className={`w-3 h-3 rounded-full transition-all focus:outline-none
                ${
 									currentIndex === slideIndex
-										? "bg-white scale-125"
+										? "bg-govco-warning scale-125"
 										: "bg-white bg-opacity-50 hover:bg-opacity-75"
 								}`}
 							aria-label={`Ir al slide ${slideIndex + 1}`}
