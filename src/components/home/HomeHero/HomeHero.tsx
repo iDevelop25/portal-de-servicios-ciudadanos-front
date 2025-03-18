@@ -31,8 +31,8 @@ function HomeHero() {
 
 	return (
 		<section className="relative w-full">
-			{/* Slider de imágenes */}
-			<div className="h-[450px] sm:h-[500px] relative overflow-hidden">
+			{/* Slider de imágenes - Altura adaptable según dispositivo */}
+			<div className="h-[360px] sm:h-[350px] md:h-[380px] relative overflow-hidden">
 				{slides.map((src, idx) => (
 					<div
 						key={idx}
@@ -50,7 +50,7 @@ function HomeHero() {
 				))}
 
 				{/* Navegación del slider */}
-				<div className="absolute inset-x-0 bottom-10 flex justify-center gap-2 z-10">
+				<div className="absolute inset-x-0 bottom-4 flex justify-center gap-2 z-10">
 					{slides.map((_, idx) => (
 						<button
 							key={idx}
@@ -106,46 +106,49 @@ function HomeHero() {
 				</button>
 			</div>
 
-			{/* Contenido superpuesto */}
-			<div className="absolute top-16 md:top-20 inset-x-0 text-center z-10 px-4">
-				<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-3 drop-shadow-lg tracking-tight leading-tight max-w-4xl mx-auto">
+			{/* Título y subtítulo - Posicionamiento mejorado */}
+			<div className="absolute top-6 sm:top-10 md:top-12 inset-x-0 text-center z-10 px-4">
+				<h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3 drop-shadow-lg tracking-tight leading-tight max-w-4xl mx-auto">
 					Bienvenido al Portal de Servicios Ciudadanos
 				</h1>
-				<p className="text-base sm:text-lg md:text-xl text-white drop-shadow-lg max-w-3xl mx-auto">
+				<p className="text-xs sm:text-base md:text-lg text-white drop-shadow-lg max-w-3xl mx-auto mb-6 sm:mb-8">
 					¡Explora y simplifica tus gestiones con nosotros!
 				</p>
 			</div>
 
-			{/* Buscador - Diseño mejorado con Tailwind */}
-			<div className="absolute top-[130px] sm:top-[160px] md:top-[180px] inset-x-0 px-4 z-20">
+			{/* Buscador - Posicionamiento ajustado para evitar solapamientos */}
+			<div className="absolute top-[110px] sm:top-[140px] md:top-[160px] inset-x-0 px-4 z-20">
 				<div className="max-w-3xl mx-auto bg-white rounded-full shadow-lg overflow-hidden transition-transform hover:shadow-xl hover:-translate-y-0.5">
 					<div className="flex items-center">
-						<div className="pl-5 sm:pl-6 py-3 text-govco-gray-400 flex-shrink-0">
-							<span className="text-sm sm:text-base whitespace-nowrap">
+						<div className="pl-4 sm:pl-6 py-2 sm:py-3 text-govco-gray-400 flex-shrink-0">
+							<span className="text-xs sm:text-sm md:text-base whitespace-nowrap">
 								¿Qué deseas buscar?
 							</span>
 						</div>
 						<input
 							type="text"
 							placeholder="Pago de impuestos"
-							className="flex-1 py-3 pl-2 pr-3 outline-none text-govco-gray-600 placeholder-govco-gray-300 text-sm sm:text-base"
+							className="flex-1 py-2 sm:py-3 pl-2 pr-3 outline-none text-govco-gray-600 placeholder-govco-gray-300 text-xs sm:text-sm md:text-base"
 						/>
 						<button
-							className="bg-govco-primary hover:bg-govco-secondary transition-colors text-white p-3 rounded-full m-1.5 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-govco-primary focus:ring-offset-2"
+							className="bg-govco-primary hover:bg-govco-secondary transition-colors text-white p-2 sm:p-3 rounded-full m-1 sm:m-1.5 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-govco-primary focus:ring-offset-2"
 							aria-label="Buscar"
 						>
-							<Search size={22} />
+							<Search
+								size={18}
+								className="sm:h-[20px] sm:w-[20px] md:h-[22px] md:w-[22px]"
+							/>
 						</button>
 					</div>
 				</div>
 			</div>
 
-			{/* Sección "¿Cómo podemos ayudarte?" */}
-			<div className="absolute bottom-16 sm:bottom-20 inset-x-0 text-center z-10 px-4">
-				<h2 className="text-xl sm:text-2xl font-bold text-white mb-2 drop-shadow-lg">
+			{/* Sección "¿Cómo podemos ayudarte?" - Posicionamiento ajustado */}
+			<div className="absolute bottom-6 sm:bottom-10 md:bottom-12 inset-x-0 text-center z-10 px-4">
+				<h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1 drop-shadow-lg">
 					¿Cómo podemos ayudarte?
 				</h2>
-				<p className="text-white text-sm sm:text-base drop-shadow-lg px-4 max-w-3xl mx-auto">
+				<p className="text-xs sm:text-sm text-white drop-shadow-lg px-4 max-w-3xl mx-auto">
 					Estos son accesos rápidos para servicios o trámites que requieras
 				</p>
 			</div>

@@ -1,5 +1,6 @@
 import MainLayout from "../../components/layout/MainLayout"
 import HomeHero from "../../components/home/HomeHero"
+import ServiceContainer from "../../components/home/ServiceContainer"
 import { ROUTES } from "../../config/routes"
 
 /**
@@ -11,6 +12,9 @@ function Home() {
 		<MainLayout title={ROUTES.HOME.title}>
 			{/* Hero Section con Slider */}
 			<HomeHero />
+
+			{/* Contenedor de servicios destacados */}
+			<ServiceContainer />
 
 			<div className="container mx-auto px-4 py-8">
 				{/* Contenido adicional de la página de inicio */}
