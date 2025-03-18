@@ -1,4 +1,5 @@
 import MainLayout from "../../components/layout/MainLayout"
+import HomeHero from "../../components/home/HomeHero"
 import { ROUTES } from "../../config/routes"
 
 /**
@@ -8,7 +9,12 @@ import { ROUTES } from "../../config/routes"
 function Home() {
 	return (
 		<MainLayout title={ROUTES.HOME.title}>
-			<div className="container mx-auto px-4 py-8"></div>
+			{/* Hero Section con Slider */}
+			<HomeHero />
+
+			<div className="container mx-auto px-4 py-8">
+				{/* Contenido adicional de la página de inicio */}
+			</div>
 		</MainLayout>
 	)
 }

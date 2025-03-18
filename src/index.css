@@ -86,7 +86,6 @@ h5,
 h6 {
 	font-family: var(--font-govco-primary);
 	font-weight: 700;
-	color: var(--color-govco-dark);
 	margin-bottom: 1rem;
 }
 
