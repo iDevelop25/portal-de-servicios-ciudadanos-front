@@ -1,0 +1,20 @@
+/* Estilos específicos para el NavBar */
+.nav-link {
+	text-decoration: none !important;
+	color: black !important;
+}
+
+.nav-link:hover {
+	text-decoration: none !important;
+	color: var(--color-govco-danger) !important;
+}
+
+.nav-link.active {
+	color: black !important;
+	text-decoration: none !important;
+}
+
+/* Sobrescribir los estilos predeterminados de Link de react-router-dom */
+a.nav-link:hover {
+	text-decoration: none;
+}

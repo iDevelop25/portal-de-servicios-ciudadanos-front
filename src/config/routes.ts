@@ -25,6 +25,43 @@ export const ROUTES: RoutesMap = {
 		description: "Ponte en contacto con nosotros",
 		exact: true,
 	},
+	// Nuevas rutas para el NavBar
+	MI_CIUDAD: {
+		path: "/mi-ciudad",
+		title: "Mi Ciudad",
+		description: "Información sobre la ciudad de Bogotá",
+		exact: true,
+	},
+	QUE_HACER: {
+		path: "/que-hacer",
+		title: "¿Qué hacer?",
+		description: "Actividades y trámites disponibles",
+		exact: true,
+	},
+	SERVICIOS: {
+		path: "/servicios",
+		title: "Servicios",
+		description: "Servicios disponibles para los ciudadanos",
+		exact: true,
+	},
+	YO_PARTICIPO: {
+		path: "/yo-participo",
+		title: "Yo Participo",
+		description: "Participación ciudadana",
+		exact: true,
+	},
+	ASI_VAMOS: {
+		path: "/asi-vamos",
+		title: "Así Vamos",
+		description: "Indicadores y avances de la ciudad",
+		exact: true,
+	},
+	INTERNACIONAL: {
+		path: "/internacional",
+		title: "Internacional",
+		description: "Actividades y relaciones internacionales",
+		exact: true,
+	},
 
 	// Rutas que requerirán autenticación en el futuro
 	DASHBOARD: {

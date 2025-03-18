@@ -1,5 +1,6 @@
 import { usePageTitle } from "../../../hooks/usePageTitle"
 import TopBar from "../TopBar"
+import NavBar from "../NavBar"
 
 /**
  * Props para el componente MainLayout
@@ -15,7 +16,7 @@ interface MainLayoutProps {
 
 /**
  * Layout principal de la aplicación
- * Incorpora elementos comunes como TopBar que se mostrarán en todas las páginas
+ * Incorpora elementos comunes como TopBar y NavBar que se mostrarán en todas las páginas
  */
 function MainLayout({
 	title,
@@ -29,6 +30,9 @@ function MainLayout({
 		<div className="min-h-screen flex flex-col">
 			{/* TopBar - Se muestra en todas las páginas */}
 			<TopBar />
+
+			{/* NavBar - Menú principal de navegación */}
+			<NavBar />
 
 			{/* Contenido principal */}
 			<main className="flex-grow">{children}</main>
