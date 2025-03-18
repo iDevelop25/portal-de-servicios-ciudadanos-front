@@ -1,1 +1,308 @@
 @import "tailwindcss";
+
+/**
+ * Estilos basados en el Kit de Herramientas de Integración GOV.CO
+ * https://cdn.www.gov.co/v4/home#kit-herramientas-integracion
+ */
+
+:root {
+	/* Colores principales */
+	--color-govco-primary: #3366cc;
+	--color-govco-secondary: #004884;
+	--color-govco-success: #069169;
+	--color-govco-warning: #f3d03e;
+	--color-govco-danger: #a80521;
+	--color-govco-info: #115c8f;
+	--color-govco-light: #f6f8f9;
+	--color-govco-dark: #001c55;
+
+	/* Grises específicos GOV.CO */
+	--color-govco-gray-10: #f6f8f9;
+	--color-govco-gray-100: #e6effd;
+	--color-govco-gray-200: #f6f8f9;
+	--color-govco-gray-300: #babdbf;
+	--color-govco-gray-400: #6e757b;
+	--color-govco-gray-500: #4b4b4b;
+	--color-govco-gray-600: #323232;
+
+	/* Estilos de texto */
+	--font-govco-primary: "Montserrat", sans-serif;
+	--font-govco-secondary: "WorkSans", sans-serif;
+
+	/* Bordes y radios */
+	--border-radius-govco: 0.25rem;
+}
+
+/* Estilos de tipografía */
+@font-face {
+	font-family: "Montserrat";
+	src: url("https://cdn.www.gov.co/fonts/montserrat/montserrat-regular-webfont.woff2")
+		format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Montserrat";
+	src: url("https://cdn.www.gov.co/fonts/montserrat/montserrat-bold-webfont.woff2")
+		format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "WorkSans";
+	src: url("https://cdn.www.gov.co/fonts/work-sans/WorkSans-Regular.ttf")
+		format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "WorkSans";
+	src: url("https://cdn.www.gov.co/fonts/work-sans/WorkSans-Bold.ttf")
+		format("truetype");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Estilos base */
+body {
+	font-family: var(--font-govco-primary);
+	color: var(--color-govco-gray-600);
+	background-color: var(--color-govco-gray-10);
+	line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-govco-primary);
+	font-weight: 700;
+	color: var(--color-govco-dark);
+	margin-bottom: 1rem;
+}
+
+h1 {
+	font-size: 2.25rem;
+	line-height: 2.75rem;
+}
+
+h2 {
+	font-size: 1.875rem;
+	line-height: 2.25rem;
+}
+
+h3 {
+	font-size: 1.5rem;
+	line-height: 1.75rem;
+}
+
+h4 {
+	font-size: 1.25rem;
+	line-height: 1.5rem;
+}
+
+h5 {
+	font-size: 1.125rem;
+	line-height: 1.375rem;
+}
+
+h6 {
+	font-size: 1rem;
+	line-height: 1.25rem;
+}
+
+p {
+	margin-bottom: 1rem;
+	font-family: var(--font-govco-secondary);
+}
+
+a {
+	color: var(--color-govco-primary);
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+a:hover {
+	color: var(--color-govco-secondary);
+	text-decoration: underline;
+}
+
+/* Utilidades para colores GOV.CO */
+.bg-govco-primary {
+	background-color: var(--color-govco-primary);
+}
+.bg-govco-secondary {
+	background-color: var(--color-govco-secondary);
+}
+.bg-govco-success {
+	background-color: var(--color-govco-success);
+}
+.bg-govco-warning {
+	background-color: var(--color-govco-warning);
+}
+.bg-govco-danger {
+	background-color: var(--color-govco-danger);
+}
+.bg-govco-info {
+	background-color: var(--color-govco-info);
+}
+.bg-govco-light {
+	background-color: var(--color-govco-light);
+}
+.bg-govco-dark {
+	background-color: var(--color-govco-dark);
+}
+
+.text-govco-primary {
+	color: var(--color-govco-primary);
+}
+.text-govco-secondary {
+	color: var(--color-govco-secondary);
+}
+.text-govco-success {
+	color: var(--color-govco-success);
+}
+.text-govco-warning {
+	color: var(--color-govco-warning);
+}
+.text-govco-danger {
+	color: var(--color-govco-danger);
+}
+.text-govco-info {
+	color: var(--color-govco-info);
+}
+.text-govco-light {
+	color: var(--color-govco-light);
+}
+.text-govco-dark {
+	color: var(--color-govco-dark);
+}
+
+/* Botones estilo GOV.CO */
+.btn-govco {
+	display: inline-block;
+	font-weight: 700;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+	padding: 0.75rem 1.5rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: var(--border-radius-govco);
+	transition: all 0.3s ease;
+	font-family: var(--font-govco-primary);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.btn-govco-primary {
+	color: white;
+	background-color: var(--color-govco-primary);
+	border: 2px solid var(--color-govco-primary);
+}
+
+.btn-govco-primary:hover {
+	background-color: var(--color-govco-secondary);
+	border-color: var(--color-govco-secondary);
+}
+
+.btn-govco-secondary {
+	color: white;
+	background-color: var(--color-govco-secondary);
+	border: 2px solid var(--color-govco-secondary);
+}
+
+.btn-govco-secondary:hover {
+	background-color: var(--color-govco-dark);
+	border-color: var(--color-govco-dark);
+}
+
+.btn-govco-outline {
+	color: var(--color-govco-primary);
+	background-color: transparent;
+	border: 2px solid var(--color-govco-primary);
+}
+
+.btn-govco-outline:hover {
+	color: white;
+	background-color: var(--color-govco-primary);
+}
+
+/* Componentes básicos GOV.CO */
+.card-govco {
+	background-color: white;
+	border-radius: var(--border-radius-govco);
+	box-shadow: 0 4px 6px rgba(0, 28, 85, 0.1);
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	border-top: 4px solid var(--color-govco-primary);
+}
+
+.alert-govco {
+	padding: 1rem;
+	border-radius: var(--border-radius-govco);
+	margin-bottom: 1rem;
+	border-left: 4px solid transparent;
+}
+
+.alert-govco-primary {
+	background-color: var(--color-govco-gray-100);
+	border-left-color: var(--color-govco-primary);
+}
+
+.alert-govco-success {
+	background-color: rgba(6, 145, 105, 0.1);
+	border-left-color: var(--color-govco-success);
+}
+
+.alert-govco-warning {
+	background-color: rgba(243, 208, 62, 0.1);
+	border-left-color: var(--color-govco-warning);
+}
+
+.alert-govco-danger {
+	background-color: rgba(168, 5, 33, 0.1);
+	border-left-color: var(--color-govco-danger);
+}
+
+/* Estilos para inputs */
+.input-govco {
+	display: block;
+	width: 100%;
+	padding: 0.75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: var(--color-govco-gray-600);
+	background-color: white;
+	border: 1px solid var(--color-govco-gray-300);
+	border-radius: var(--border-radius-govco);
+	transition: border-color 0.3s ease;
+}
+
+.input-govco:focus {
+	outline: none;
+	border-color: var(--color-govco-primary);
+	box-shadow: 0 0 0 0.2rem rgba(51, 102, 204, 0.25);
+}
+
+.label-govco {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: 600;
+	color: var(--color-govco-gray-600);
+}
+
+/* Accesibilidad - focus visible */
+*:focus-visible {
+	outline: 3px solid var(--color-govco-primary);
+	outline-offset: 2px;
+}
