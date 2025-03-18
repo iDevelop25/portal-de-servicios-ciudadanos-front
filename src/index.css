@@ -306,3 +306,24 @@ a:hover {
 	outline: 3px solid var(--color-govco-primary);
 	outline-offset: 2px;
 }
+
+/* Estilos específicos para la barra superior de GOV.CO */
+.barra-superior-govco {
+	background-color: var(--color-govco-primary);
+	color: white;
+	padding: 0.5rem 1rem;
+}
+
+.idioma-icon-barra-superior-govco {
+	background: transparent;
+	border: none;
+	color: white;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	font-size: 0.875rem;
+}
+
+.idioma-icon-barra-superior-govco:hover {
+	text-decoration: underline;
+}
