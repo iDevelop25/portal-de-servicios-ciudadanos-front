@@ -106,7 +106,7 @@ const tramitesData: Tramite[] = [
  */
 function ServiceContainer() {
 	return (
-		<div className="flex justify-center w-full relative -mt-2 z-20">
+		<div className="flex justify-center w-full relative -mt-2 mb-28 md:mb-15 z-20">
 			<div className="w-full max-w-[80%] bg-white rounded-lg shadow-lg pt-10 px-4 pb-12 relative">
 				{/* Iconos circulares en el borde superior */}
 				<div className="absolute -top-7 left-0 right-0 px-2 sm:px-4 md:px-6 flex justify-around md:justify-evenly">

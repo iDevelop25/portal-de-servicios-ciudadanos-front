@@ -123,9 +123,9 @@ function Footer({
 			{/* Contenedor principal - Fondo rojo con altura ajustada */}
 			<div className="bg-[#D32D37] pt-20 pb-[300px] px-4 relative">
 				{/* Contenedor blanco flotante con bordes redondeados y altura reducida */}
-				<div className="absolute left-0 right-0 mx-auto w-[95%] sm:w-[92%] md:w-[90%] max-w-[1719px] bg-[#FCFCFC] rounded-[20px] shadow-lg p-4 mt-10 sm:mt-0 sm:p-6 md:p-8 top-[-220px] sm:top-[-140px] md:top-[-190px] z-10">
+				<div className="absolute left-0 right-0 mx-auto w-[95%] sm:w-[92%] md:w-[90%] max-w-[1719px] bg-[#FCFCFC] rounded-[20px] shadow-lg p-4 sm:mt-0 sm:p-6 md:p-8 top-[-220px] sm:top-[-240px] md:top-[-190px] z-10">
 					<div className="container mx-auto max-w-6xl">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
+						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
 							{/* Columna izquierda: Información de contacto */}
 							<div className="px-1 sm:px-2 md:px-4">
 								<h2 className="text-govco-danger text-lg sm:text-xl font-bold mb-3 sm:mb-5">

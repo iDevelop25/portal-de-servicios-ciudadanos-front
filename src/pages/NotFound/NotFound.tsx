@@ -1,41 +1,24 @@
-import { useNavigate } from "react-router-dom"
-import { AlertTriangle } from "lucide-react"
+// frontend/src/pages/NotFound/NotFound.tsx
+import BaseLayout from "../../components/layout/BaseLayout/BaseLayout"
+import { Link } from "react-router-dom"
 import { ROUTES } from "../../config/routes"
-import MainLayout from "../../components/layout/MainLayout"
 
-/**
- * Componente para la página 404 (Not Found)
- * Se muestra cuando el usuario navega a una ruta que no existe
- */
 function NotFound() {
-	const navigate = useNavigate()
-
-	/**
-	 * Función para redirigir al usuario a la página de inicio
-	 */
-	const handleGoHome = () => {
-		navigate(ROUTES.HOME.path)
-	}
-
 	return (
-		<MainLayout title={ROUTES.NOT_FOUND.title}>
-			<div className="flex flex-col items-center justify-center py-16 p-4">
-				<AlertTriangle size={64} className="text-govco-warning mb-4" />
-
-				<h1 className="text-4xl font-bold text-govco-dark mb-2">404</h1>
-				<h2 className="text-2xl font-semibold text-govco-secondary mb-6">
-					Página no encontrada
-				</h2>
-
-				<p className="text-govco-gray-500 max-w-md text-center mb-8">
-					Lo sentimos, la página que estás buscando no existe o ha sido movida.
+		<BaseLayout title="Página no encontrada" hideFooter={true}>
+			<div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+				<h1 className="text-6xl font-bold text-govco-danger mb-4">404</h1>
+				<p className="text-xl mb-6">
+					Lo sentimos, la página que buscas no existe.
 				</p>
-
-				<button onClick={handleGoHome} className="btn-govco btn-govco-primary">
+				<Link
+					to={ROUTES.HOME.path}
+					className="bg-govco-primary text-white px-6 py-2 rounded-full hover:bg-govco-secondary transition-colors"
+				>
 					Volver al inicio
-				</button>
+				</Link>
 			</div>
-		</MainLayout>
+		</BaseLayout>
 	)
 }
 
