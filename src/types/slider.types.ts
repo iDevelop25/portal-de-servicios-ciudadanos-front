@@ -1,4 +1,4 @@
-// Tipos para el componente Slider
+// Tipos para el componente Slider (mantener lo existente)
 export interface SlideItem {
 	id: string
 	imageUrl: string
@@ -48,4 +48,52 @@ export interface SliderProps {
 	 * @default "bottom-4"
 	 */
 	indicatorPosition?: string
+}
+
+// Tipos para el componente CardSlider
+export interface CardSliderProps {
+	/**
+	 * Array de elementos hijos para mostrar en el slider
+	 */
+	children: React.ReactNode[]
+
+	/**
+	 * Título opcional para la sección del slider
+	 */
+	title?: string
+
+	/**
+	 * Ancho de cada tarjeta en píxeles
+	 * @default 280
+	 */
+	cardWidth?: number
+
+	/**
+	 * Espacio entre tarjetas en píxeles
+	 * @default 16
+	 */
+	gap?: number
+
+	/**
+	 * Número de tarjetas visibles a la vez (para diseño responsivo)
+	 * @default 4
+	 */
+	visibleCards?: number
+
+	/**
+	 * Clases CSS adicionales
+	 */
+	className?: string
+
+	/**
+	 * Activar o desactivar el autoplay
+	 * @default true
+	 */
+	autoplay?: boolean
+
+	/**
+	 * Intervalo de tiempo para el autoplay en milisegundos
+	 * @default 4000
+	 */
+	autoplayInterval?: number
 }

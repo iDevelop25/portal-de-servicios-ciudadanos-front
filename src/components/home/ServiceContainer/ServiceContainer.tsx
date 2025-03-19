@@ -1,17 +1,22 @@
 import CircleIcon from "../../common/CircleIcon"
 import ServiceCard from "../../common/ServiceCard"
-import { ServiceRoute } from "../../../types/service.types"
+import TramiteCard from "../../common/TramiteCard"
+import CardSlider from "../../common/CardSlider"
+import { ServiceRoute, Tramite } from "../../../types/service.types"
 import {
 	Banknote,
 	PhoneCall,
 	Headphones,
 	MessageSquare,
 	Calendar,
+	Car,
+	FileText,
+	FileSpreadsheet,
+	CreditCard,
 } from "lucide-react"
 
 // Importamos las imágenes locales
 import victimasImage from "../../../assets/images/rutas/victimas.png"
-// Asegúrate de que existan estos archivos o crea las importaciones para las imágenes que tengas disponibles
 import migrantesImage from "../../../assets/images/rutas/migrantes.png"
 import educacionImage from "../../../assets/images/rutas/educacion.png"
 
@@ -47,6 +52,49 @@ const serviceRoutesData: ServiceRoute[] = [
 ]
 
 /**
+ * Datos de ejemplo de trámites más consultados
+ * En un futuro, estos datos vendrán de un backend
+ */
+const tramitesData: Tramite[] = [
+	{
+		id: "pico-placa",
+		title: "Exención de pico y placa",
+		icon: Car,
+		link: "/tramites/exencion-pico-placa",
+	},
+	{
+		id: "impuesto-predial",
+		title: "Impuesto predial unificado",
+		icon: FileText,
+		link: "/tramites/impuesto-predial",
+	},
+	{
+		id: "ficha-catastral",
+		title: "Ficha catastral de predio",
+		icon: FileSpreadsheet,
+		link: "/tramites/ficha-catastral",
+	},
+	{
+		id: "pago-fotomultas",
+		title: "Pago Fotomultas",
+		icon: CreditCard,
+		link: "/tramites/pago-fotomultas",
+	},
+	{
+		id: "certificado-tradicion",
+		title: "Certificado de tradición",
+		icon: FileText,
+		link: "/tramites/certificado-tradicion",
+	},
+	{
+		id: "licencia-construccion",
+		title: "Licencia de construcción",
+		icon: FileSpreadsheet,
+		link: "/tramites/licencia-construccion",
+	},
+]
+
+/**
  * Componente ServiceContainer
  *
  * Contenedor principal que se muestra debajo del slider para mostrar servicios destacados
@@ -55,7 +103,7 @@ const serviceRoutesData: ServiceRoute[] = [
 function ServiceContainer() {
 	return (
 		<div className="flex justify-center w-full relative -mt-2 z-20">
-			<div className="w-full max-w-[70%] bg-white rounded-lg shadow-lg pt-10 px-4 pb-12 relative">
+			<div className="w-full max-w-[80%] bg-white rounded-lg shadow-lg pt-10 px-4 pb-12 relative">
 				{/* Iconos circulares en el borde superior */}
 				<div className="absolute -top-7 left-0 right-0 px-2 sm:px-4 md:px-6 flex justify-around md:justify-evenly">
 					{/* Contenedores con ancho fijo para evitar saltos de línea */}
@@ -128,6 +176,24 @@ function ServiceContainer() {
 						{serviceRoutesData.map((service) => (
 							<ServiceCard key={service.id} service={service} />
 						))}
+					</div>
+
+					{/* Slider de trámites más consultados */}
+					<div className="mt-16">
+						<CardSlider
+							title="Más consultados"
+							cardWidth={250}
+							gap={24}
+							visibleCards={4}
+						>
+							{tramitesData.map((tramite) => (
+								<TramiteCard
+									key={tramite.id}
+									tramite={tramite}
+									className="h-full"
+								/>
+							))}
+						</CardSlider>
 					</div>
 				</div>
 			</div>
