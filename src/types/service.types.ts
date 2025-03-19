@@ -20,3 +20,11 @@ export interface Tramite {
 	category?: string
 	featured?: boolean
 }
+
+export interface SecretaryServiceItem {
+	id: string
+	title: string
+	type: "tramite" | "servicio"
+	description: string
+	link: string
+}

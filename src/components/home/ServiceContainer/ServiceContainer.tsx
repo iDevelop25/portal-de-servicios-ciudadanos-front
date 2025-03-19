@@ -2,6 +2,7 @@ import CircleIcon from "../../common/CircleIcon"
 import ServiceCard from "../../common/ServiceCard"
 import TramiteCard from "../../common/TramiteCard"
 import CardSlider from "../../common/CardSlider"
+import SecretaryServices from "../../common/SecretaryServices"
 import { ServiceRoute, Tramite } from "../../../types/service.types"
 import {
 	Banknote,
@@ -194,6 +195,11 @@ function ServiceContainer() {
 								/>
 							))}
 						</CardSlider>
+					</div>
+
+					{/* Nueva sección: Trámites y servicios por secretaría */}
+					<div className="mt-16">
+						<SecretaryServices />
 					</div>
 				</div>
 			</div>
