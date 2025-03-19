@@ -20,6 +20,9 @@ import {
 import victimasImage from "../../../assets/images/rutas/victimas.png"
 import migrantesImage from "../../../assets/images/rutas/migrantes.png"
 import educacionImage from "../../../assets/images/rutas/educacion.png"
+import ProgressStats from "../../common/ProgressStats"
+import avancesImage from "../../../assets/images/avances.png"
+import FrequentQuestions from "../../common/FrequentQuestions"
 
 /**
  * Datos de ejemplo de rutas de servicio
@@ -201,6 +204,62 @@ function ServiceContainer() {
 					<div className="mt-16">
 						<SecretaryServices />
 					</div>
+				</div>
+
+				{/* Sección: Estadísticas de avances */}
+				<div className="mt-16 -mx-4">
+					<ProgressStats
+						backgroundImage={avancesImage}
+						stats={[
+							{
+								value: 207597,
+								description: "Personas atendidas en enero de 2025",
+							},
+							{ value: 288846, description: "Interacciones en enero de 2025" },
+							{ value: 39098, description: "Otro dato más" },
+						]}
+					/>
+				</div>
+
+				{/* Nueva sección: Preguntas frecuentes */}
+				<div className="mt-16">
+					<FrequentQuestions
+						items={[
+							{
+								id: "pagos-pendientes",
+								question: "¿Cómo consulto el estado de mis pagos pendientes?",
+								answer:
+									"Estamos para servirte. Acá encontrará las respuestas a las preguntas más frecuentes realizadas por nuestros ciudadanos. Estamos para servirte. Acá encontrará las respuestas a las preguntas más frecuentes realizadas por nuestros ciudadanos.. Estamos para servirte. Acá encontrará las respuestas a las preguntas más frecuentes realizadas por nuestros ciudadanos.",
+								isOpen: true,
+							},
+							{
+								id: "varios-tramites",
+								question:
+									"¿Puedo pagar varios trámites en una sola transacción?",
+								answer:
+									"Sí, es posible realizar el pago de varios trámites en una sola transacción. Para ello, debe seleccionar todos los trámites que desea pagar y agregarlos al carrito de compras. Luego, podrá proceder al pago en un solo paso.",
+							},
+							{
+								id: "pagos-presenciales",
+								question: "¿Es posible realizar pagos de manera presencial?",
+								answer:
+									"Sí, puede realizar pagos de manera presencial en cualquiera de nuestros puntos de atención o en entidades bancarias autorizadas presentando el recibo con código de barras que puede generar desde nuestro portal.",
+							},
+							{
+								id: "comprobante-pago",
+								question: "¿Cómo puedo obtener un comprobante de pago?",
+								answer:
+									"Puede obtener un comprobante de pago ingresando a la sección 'Mis trámites' de su cuenta, seleccionando el trámite correspondiente y haciendo clic en 'Descargar comprobante'. También puede solicitarlo presencialmente en nuestros puntos de atención.",
+							},
+							{
+								id: "pago-no-reflejado",
+								question:
+									"¿Qué debo hacer si mi pago no se ve reflejado en el sistema?",
+								answer:
+									"Si su pago no se ve reflejado en el sistema después de 48 horas, le recomendamos conservar su comprobante de pago y comunicarse con nuestra línea de atención al ciudadano al 123-456-7890 o escribirnos a soporte@bogota.gov.co para verificar el estado de su transacción.",
+							},
+						]}
+					/>
 				</div>
 			</div>
 		</div>
