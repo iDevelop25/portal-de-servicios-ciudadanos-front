@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Plus, Loader2 } from "lucide-react"
 import SecretaryServiceCard from "../SecretaryServiceCard"
 import { SecretaryServiceItem } from "../../../types/service.types"
 
@@ -8,18 +8,22 @@ interface SecretaryServicesProps {
 	title?: string
 	description?: string
 	className?: string
+	initialItemsToShow?: number
+	loadIncrement?: number
 }
 
 /**
  * Componente SecretaryServices
  *
  * Muestra una lista de trámites y servicios filtrados por categoría
- * con opciones de ordenamiento y filtrado
+ * con opciones de ordenamiento y filtrado y paginación progresiva
  */
 function SecretaryServices({
 	title = "Trámites y servicios por secretaría",
 	description = "Aquí encontrarás información y herramientas para acceder de manera rápida y sencilla a trámites, servicios y recursos de interés.",
 	className = "",
+	initialItemsToShow = 8,
+	loadIncrement = 4,
 }: SecretaryServicesProps) {
 	// Estado para los filtros
 	const [activeFilter, setActiveFilter] = useState<
@@ -29,6 +33,10 @@ function SecretaryServices({
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 	// Estado para el criterio de ordenamiento
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+	// Estado para la cantidad de elementos a mostrar
+	const [itemsToShow, setItemsToShow] = useState(initialItemsToShow)
+	// Estado para simular carga
+	const [isLoading, setIsLoading] = useState(false)
 
 	// Opciones de ordenamiento
 	const sortOptions = [
@@ -41,6 +49,11 @@ function SecretaryServices({
 		setSortOrder(order)
 		setIsDropdownOpen(false)
 	}
+
+	// Restablecer itemsToShow cuando cambia el filtro
+	useEffect(() => {
+		setItemsToShow(initialItemsToShow)
+	}, [activeFilter, initialItemsToShow])
 
 	// Datos de ejemplo para trámites y servicios
 	const servicesData: SecretaryServiceItem[] = [
@@ -108,6 +121,39 @@ function SecretaryServices({
 				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
 			link: "/servicios/plano-predio-catastral-2",
 		},
+		// Agregar algunos elementos adicionales para probar la funcionalidad de "Cargar más"
+		{
+			id: "certificado-nomenclatura-1",
+			title: "Certificado de nomenclatura",
+			type: "tramite",
+			description:
+				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
+			link: "/tramites/certificado-nomenclatura",
+		},
+		{
+			id: "certificado-nomenclatura-2",
+			title: "Certificado de nomenclatura urbana",
+			type: "tramite",
+			description:
+				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
+			link: "/tramites/certificado-nomenclatura-urbana",
+		},
+		{
+			id: "copia-planos-1",
+			title: "Copia de planos urbanísticos",
+			type: "servicio",
+			description:
+				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
+			link: "/servicios/copia-planos-urbanisticos",
+		},
+		{
+			id: "copia-planos-2",
+			title: "Copia de planos arquitectónicos",
+			type: "servicio",
+			description:
+				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
+			link: "/servicios/copia-planos-arquitectonicos",
+		},
 	]
 
 	// Filtramos los servicios según el filtro activo
@@ -125,6 +171,24 @@ function SecretaryServices({
 				return b.title.localeCompare(a.title)
 			}
 		})
+
+	// Los elementos que se mostrarán según el estado actual
+	const visibleServices = filteredServices.slice(0, itemsToShow)
+
+	// Determinar si hay más elementos para cargar
+	const hasMoreItems = visibleServices.length < filteredServices.length
+
+	// Función para cargar más elementos
+	const handleLoadMore = () => {
+		// Simular carga desde el backend
+		setIsLoading(true)
+
+		// Simular un retraso de red
+		setTimeout(() => {
+			setItemsToShow((prevCount) => prevCount + loadIncrement)
+			setIsLoading(false)
+		}, 800)
+	}
 
 	// Función para cerrar el dropdown cuando se hace clic fuera
 	const handleClickOutside = () => {
@@ -242,9 +306,45 @@ function SecretaryServices({
 
 			{/* Grid de tarjetas de servicios/trámites */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-				{filteredServices.map((item) => (
+				{visibleServices.map((item) => (
 					<SecretaryServiceCard key={item.id} item={item} />
 				))}
+			</div>
+
+			{/* Botón "Cargar más" - Solo se muestra si hay más elementos */}
+			{hasMoreItems && (
+				<div className="mt-8 text-center">
+					<button
+						onClick={handleLoadMore}
+						disabled={isLoading}
+						className="inline-flex items-center justify-center py-2 px-6 rounded-full text-sm border border-govco-danger text-govco-danger hover:bg-govco-danger/10 font-medium transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed group"
+					>
+						{isLoading ? (
+							<>
+								<Loader2 size={16} className="mr-2 animate-spin" />
+								<span>Cargando...</span>
+							</>
+						) : (
+							<>
+								<Plus
+									size={16}
+									className="mr-1.5 transition-transform group-hover:rotate-90"
+								/>
+								<span>Cargar más trámites y servicios</span>
+								<ChevronDown
+									size={16}
+									className="ml-1.5 transition-transform group-hover:translate-y-0.5"
+								/>
+							</>
+						)}
+					</button>
+				</div>
+			)}
+
+			{/* Mostrar contador de resultados cuando hay elementos */}
+			<div className="mt-4 text-center text-sm text-govco-gray-600">
+				Mostrando {visibleServices.length} de {filteredServices.length}{" "}
+				resultados
 			</div>
 		</div>
 	)
