@@ -63,6 +63,13 @@ export const ROUTES: RoutesMap = {
 		exact: true,
 	},
 
+	SERVICIO_DETALLE: {
+		path: "/servicios/:id",
+		title: "Detalle de Servicio",
+		description: "Información detallada sobre el servicio",
+		exact: true,
+	},
+
 	// Rutas que requerirán autenticación en el futuro
 	DASHBOARD: {
 		path: "/panel",

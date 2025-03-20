@@ -4,6 +4,9 @@ import { ROUTES } from "../../config/routes"
 
 // Importación dinámica (lazy loading) de los componentes de página
 const Home = React.lazy(() => import("../../pages/Home/Home"))
+const ServiceRoute = React.lazy(
+	() => import("../../pages/ServiceRoute/ServiceRoute")
+)
 
 // Página 404 (Not Found)
 const NotFound = React.lazy(() =>
@@ -28,6 +31,11 @@ export const publicRoutes: RouteObject[] = [
 	{
 		path: ROUTES.HOME.path,
 		element: <Home />,
+	},
+	// Ruta de detalle de servicio
+	{
+		path: ROUTES.SERVICIO_DETALLE.path,
+		element: <ServiceRoute />,
 	},
 	// Aquí se agregarían más rutas públicas
 

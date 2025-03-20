@@ -24,3 +24,10 @@ export interface RouteConfig {
 export type RoutesMap = {
 	[key: string]: RouteConfig
 }
+
+/**
+ * Interfaz para las rutas dinámicas de servicios
+ */
+export interface ServiceRouteParams {
+	id: string
+}
