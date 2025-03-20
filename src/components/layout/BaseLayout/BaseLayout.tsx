@@ -2,9 +2,13 @@
 import TopBar from "../TopBar"
 import NavBar from "../NavBar"
 import Footer from "../Footer"
+import Fab from "../../common/Fab"
 import { usePageTitle } from "../../../hooks/usePageTitle"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "../../../config/routes"
+
+// Importamos la imagen de Chatico
+import logoChaticoImg from "../../../assets/images/chatico/logo-chatico.png"
 
 interface BaseLayoutProps {
 	title: string
@@ -39,6 +43,13 @@ function BaseLayout({
 			<NavBar />
 			<main className="flex-grow">{children}</main>
 			{!shouldHideFooter && <Footer />}
+
+			{/* FAB de Chatico */}
+			<Fab
+				imageUrl={logoChaticoImg}
+				altText="Logo Chatico"
+				position="bottom-right"
+			/>
 		</div>
 	)
 }

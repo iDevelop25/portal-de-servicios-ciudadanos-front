@@ -5,7 +5,11 @@ import { useLocation } from "react-router-dom"
 import TopBar from "../TopBar"
 import NavBar from "../NavBar"
 import Footer from "../Footer"
+import Fab from "../../common/Fab"
 import { ROUTES } from "../../../config/routes"
+
+// Importamos la imagen de Chatico
+import logoChaticoImg from "../../../assets/images/chatico/logo-chatico.png"
 
 /**
  * Props para el componente MainLayout
@@ -55,6 +59,13 @@ function MainLayout({
 
 			{/* Footer - Se oculta en la página 404 */}
 			{!isNotFoundPage && <Footer />}
+
+			{/* FAB de Chatico */}
+			<Fab
+				imageUrl={logoChaticoImg}
+				altText="Logo Chatico"
+				position="bottom-right"
+			/>
 		</div>
 	)
 }
