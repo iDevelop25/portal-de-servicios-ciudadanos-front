@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react"
+// /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/components/home/HomeHero/HomeHero.tsx
+import { useState, useEffect, useRef } from "react"
 import { Search } from "lucide-react"
+import { searchService } from "../../../services/searchService"
+import { SearchResult } from "../../../types/search.types"
 
 function HomeHero() {
 	// Usamos imágenes temporales que ya sabemos que funcionan
@@ -10,6 +13,12 @@ function HomeHero() {
 	]
 
 	const [currentSlide, setCurrentSlide] = useState(0)
+	// Estado para el buscador predictivo
+	const [searchQuery, setSearchQuery] = useState("")
+	const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+	const [isSearching, setIsSearching] = useState(false)
+	const [showResults, setShowResults] = useState(false)
+	const searchRef = useRef<HTMLDivElement>(null)
 
 	// Autoplay
 	useEffect(() => {
@@ -19,6 +28,48 @@ function HomeHero() {
 		return () => clearInterval(timer)
 	}, [slides.length])
 
+	// Efecto para manejar clics fuera del buscador
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				searchRef.current &&
+				!searchRef.current.contains(event.target as Node)
+			) {
+				setShowResults(false)
+			}
+		}
+
+		document.addEventListener("mousedown", handleClickOutside)
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside)
+		}
+	}, [])
+
+	// Simulación de búsqueda predictiva
+	useEffect(() => {
+		const delayDebounce = setTimeout(async () => {
+			if (searchQuery.length >= 2) {
+				setIsSearching(true)
+				try {
+					// Simulamos la llamada a la API con un servicio
+					const results = await searchService.search(searchQuery)
+					setSearchResults(results)
+					setShowResults(true)
+				} catch (error) {
+					console.error("Error en la búsqueda:", error)
+					setSearchResults([])
+				} finally {
+					setIsSearching(false)
+				}
+			} else {
+				setSearchResults([])
+				setShowResults(false)
+			}
+		}, 300) // Debounce de 300ms para evitar demasiadas solicitudes
+
+		return () => clearTimeout(delayDebounce)
+	}, [searchQuery])
+
 	// Navegar al anterior slide
 	const prevSlide = () => {
 		setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
@@ -27,6 +78,23 @@ function HomeHero() {
 	// Navegar al siguiente slide
 	const nextSlide = () => {
 		setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+	}
+
+	// Manejar selección de resultado
+	const handleResultSelect = (result: SearchResult) => {
+		setSearchQuery(result.title)
+		setShowResults(false)
+		// Aquí podrías redirigir al usuario o realizar otra acción
+		console.log("Seleccionado:", result)
+	}
+
+	// Manejar envío del formulario
+	const handleSearchSubmit = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (searchQuery.trim()) {
+			console.log("Búsqueda enviada:", searchQuery)
+			// Aquí implementarías la navegación a la página de resultados
+		}
 	}
 
 	return (
@@ -117,29 +185,78 @@ function HomeHero() {
 			</div>
 
 			{/* Buscador - Posicionamiento ajustado para evitar solapamientos */}
-			<div className="absolute top-[110px] sm:top-[140px] md:top-[160px] inset-x-0 px-4 z-20">
-				<div className="max-w-3xl mx-auto bg-white rounded-full shadow-lg overflow-hidden transition-transform hover:shadow-xl hover:-translate-y-0.5">
-					<div className="flex items-center">
-						<div className="pl-4 sm:pl-6 py-2 sm:py-3 text-govco-gray-400 flex-shrink-0">
-							<span className="text-xs sm:text-sm md:text-base whitespace-nowrap">
-								¿Qué deseas buscar?
-							</span>
+			<div
+				className="absolute top-[110px] sm:top-[140px] md:top-[160px] inset-x-0 px-4 z-20"
+				ref={searchRef}
+			>
+				<div className="max-w-3xl mx-auto">
+					<form onSubmit={handleSearchSubmit}>
+						<div className="bg-white rounded-full shadow-lg overflow-hidden transition-transform hover:shadow-xl hover:-translate-y-0.5">
+							<div className="flex items-center">
+								<div className="pl-4 sm:pl-6 py-2 sm:py-3 text-govco-gray-400 flex-shrink-0">
+									<span className="text-xs sm:text-sm md:text-base whitespace-nowrap">
+										¿Qué deseas buscar?
+									</span>
+								</div>
+								<input
+									type="text"
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+									onFocus={() => {
+										if (searchResults.length > 0) {
+											setShowResults(true)
+										}
+									}}
+									placeholder="Pago de impuestos"
+									className="flex-1 py-2 sm:py-3 pl-2 pr-3 outline-none text-govco-gray-600 placeholder-govco-gray-300 text-xs sm:text-sm md:text-base"
+								/>
+								<button
+									type="submit"
+									className="bg-govco-primary hover:bg-govco-secondary transition-colors text-white p-2 sm:p-3 rounded-full m-1 sm:m-1.5 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-govco-primary focus:ring-offset-2"
+									aria-label="Buscar"
+								>
+									{isSearching ? (
+										<div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+									) : (
+										<Search
+											size={18}
+											className="sm:h-[20px] sm:w-[20px] md:h-[22px] md:w-[22px]"
+										/>
+									)}
+								</button>
+							</div>
 						</div>
-						<input
-							type="text"
-							placeholder="Pago de impuestos"
-							className="flex-1 py-2 sm:py-3 pl-2 pr-3 outline-none text-govco-gray-600 placeholder-govco-gray-300 text-xs sm:text-sm md:text-base"
-						/>
-						<button
-							className="bg-govco-primary hover:bg-govco-secondary transition-colors text-white p-2 sm:p-3 rounded-full m-1 sm:m-1.5 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-govco-primary focus:ring-offset-2"
-							aria-label="Buscar"
-						>
-							<Search
-								size={18}
-								className="sm:h-[20px] sm:w-[20px] md:h-[22px] md:w-[22px]"
-							/>
-						</button>
-					</div>
+					</form>
+
+					{/* Resultados predictivos */}
+					{showResults && searchResults.length > 0 && (
+						<div className="bg-white mt-2 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+							<ul className="py-1">
+								{searchResults.map((result) => (
+									<li key={result.id}>
+										<button
+											className="w-full text-left px-4 py-2 hover:bg-govco-gray-100 flex items-center"
+											onClick={() => handleResultSelect(result)}
+										>
+											{result.type === "tramite" && (
+												<span className="mr-2 text-xs px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">
+													Trámite
+												</span>
+											)}
+											{result.type === "servicio" && (
+												<span className="mr-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
+													Servicio
+												</span>
+											)}
+											<span className="text-sm text-govco-gray-700">
+												{result.title}
+											</span>
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
 				</div>
 			</div>
 
