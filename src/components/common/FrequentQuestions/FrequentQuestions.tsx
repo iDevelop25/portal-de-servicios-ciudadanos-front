@@ -6,6 +6,12 @@ interface FrequentQuestionsProps {
 	title?: string
 	subtitle?: string
 	className?: string
+	items?: {
+		id: string
+		question: string
+		answer: string
+		isOpen?: boolean
+	}[]
 }
 
 /**
