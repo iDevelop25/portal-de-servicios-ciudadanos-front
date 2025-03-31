@@ -1,35 +1,17 @@
-// /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/types/search.types.ts
-/**
- * Interfaz para los resultados de búsqueda
- */
+// Mantener los tipos existentes
 export interface SearchResult {
-	/**
-	 * Identificador único del resultado
-	 */
 	id: string
-
-	/**
-	 * Título del resultado
-	 */
 	title: string
-
-	/**
-	 * Tipo de resultado (trámite, servicio, etc.)
-	 */
-	type: "tramite" | "servicio" | "pagina" | "documento"
-
-	/**
-	 * URL para redirigir al hacer clic en el resultado
-	 */
-	url: string
-
-	/**
-	 * Descripción del resultado (opcional)
-	 */
+	type: string
+	url?: string
 	description?: string
+}
 
-	/**
-	 * Metadatos adicionales (opcional)
-	 */
-	metadata?: Record<string, unknown>
+// Añadir el nuevo tipo para la respuesta de la API
+export interface ApiSearchResult {
+	uniqueId: string
+	nombreOferta: string
+	descripcion: string
+	tituloSeo: string
+	tipologia: string
 }

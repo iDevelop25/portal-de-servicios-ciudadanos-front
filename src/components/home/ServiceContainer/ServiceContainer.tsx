@@ -164,6 +164,11 @@ function ServiceContainer() {
 					</div>
 				</div>
 
+				{/* Nueva sección: Novedades en el Servicio */}
+				<div className="mt-16">
+					<ServiceNews />
+				</div>
+
 				{/* Sección de Rutas de Servicio (dentro del contenedor) */}
 				<div className="mt-20">
 					{/* Encabezado de la sección */}
@@ -200,11 +205,6 @@ function ServiceContainer() {
 								/>
 							))}
 						</CardSlider>
-					</div>
-
-					{/* Nueva sección: Novedades en el Servicio */}
-					<div className="mt-16">
-						<ServiceNews />
 					</div>
 
 					{/* Nueva sección: Trámites y servicios por secretaría */}

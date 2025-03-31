@@ -71,6 +71,20 @@ export const ROUTES: RoutesMap = {
 		exact: true,
 	},
 
+	// Rutas de noticias
+	NEWS: {
+		path: "/noticias",
+		title: "Novedades en el Servicio",
+		description: "Últimas actualizaciones y novedades de servicios",
+		exact: true,
+	},
+	NEWS_DETAIL: {
+		path: "/noticias/:id",
+		title: "Detalle de Novedad",
+		description: "Información detallada sobre la novedad",
+		exact: true,
+	},
+
 	// Rutas reservación de turnos
 	RESERVATION: {
 		path: "/reservar-turno",
@@ -91,6 +105,13 @@ export const ROUTES: RoutesMap = {
 		path: "/admin/faqs",
 		title: "Gestión de FAQs",
 		description: "Administración de preguntas frecuentes",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_NEWS: {
+		path: "/admin/noticias",
+		title: "Gestión de Noticias",
+		description: "Administración de noticias y novedades",
 		exact: true,
 		requiresAuth: true,
 	},

@@ -46,3 +46,8 @@ export const isStaging = ENV === "staging"
 // URL reserva de turnos
 export const RESERVATION_URL =
 	import.meta.env.VITE_APP_RESERVATION_URL || "https://10.101.5.111:4433"
+
+// URL de búsqueda
+export const SEARCH_API_URL =
+	import.meta.env.VITE_APP_SEARCH_API_URL ||
+	"http://10.101.5.61:8082/api/master/search"

@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { NewsItem, ServiceNewsProps } from "../../../types/news.types"
 import useNewsService from "../../../hooks/useNewsService"
+import { Link } from "react-router-dom"
 
 /**
  * Componente ServiceNews
@@ -158,10 +159,13 @@ function ServiceNews({
 								<span className="text-sm text-govco-gray-600">
 									{currentNews.entityName}
 								</span>
-								<button className="flex items-center text-govco-primary hover:text-govco-danger text-sm font-medium transition-colors">
+								<Link
+									to="/noticias"
+									className="flex items-center text-govco-primary hover:text-govco-danger text-sm font-medium transition-colors"
+								>
 									<span>Ver más</span>
 									<Plus size={16} className="ml-1" />
-								</button>
+								</Link>
 							</div>
 						)}
 					</div>

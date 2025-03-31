@@ -7,7 +7,7 @@ const Home = React.lazy(() => import("../../pages/Home/Home"))
 const ServiceRoute = React.lazy(
 	() => import("../../pages/ServiceRoute/ServiceRoute")
 )
-
+const NewsListPage = React.lazy(() => import("../../pages/NewsListPage"))
 const Reservation = React.lazy(
 	() => import("../../pages/ReservationPage/ReservationPage")
 )
@@ -35,6 +35,10 @@ export const publicRoutes: RouteObject[] = [
 	{
 		path: ROUTES.HOME.path,
 		element: <Home />,
+	},
+	{
+		path: ROUTES.NEWS.path,
+		element: <NewsListPage />,
 	},
 	// Ruta de detalle de servicio
 	{

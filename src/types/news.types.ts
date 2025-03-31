@@ -2,7 +2,7 @@
  * Interfaz para un ítem de novedad o noticia
  */
 export interface NewsItem {
-	id: string
+	id?: string
 	title: string
 	subtitle?: string
 	content: string
@@ -10,6 +10,10 @@ export interface NewsItem {
 	entityName?: string
 	entityLogo?: string
 	imageUrl?: string
+	isActive?: boolean
+	order?: number
+	createdAt?: string
+	updatedAt?: string
 }
 
 /**

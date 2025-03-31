@@ -1,4 +1,3 @@
-// frontend/src/components/layout/DashboardLayout/DashboardLayout.tsx
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import {
@@ -52,6 +51,12 @@ function DashboardLayout({ title, children }: DashboardLayoutProps) {
 			path: ROUTES.ADMIN_FAQS.path,
 			icon: HelpCircle,
 			label: "Preguntas Frecuentes",
+		},
+		// Solo añadir el enlace de noticias si ROUTES.ADMIN_NEWS existe
+		{
+			path: ROUTES.ADMIN_NEWS?.path || "/admin/noticias",
+			icon: FileText,
+			label: "Novedades",
 		},
 		{ path: ROUTES.ADMIN_USERS.path, icon: Users, label: "Usuarios" },
 		{ path: ROUTES.ADMIN_CONTENT.path, icon: FileText, label: "Contenido" },

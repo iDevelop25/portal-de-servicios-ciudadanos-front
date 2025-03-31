@@ -51,7 +51,7 @@ function HomeHero() {
 			if (searchQuery.length >= 2) {
 				setIsSearching(true)
 				try {
-					// Simulamos la llamada a la API con un servicio
+					// Usar el servicio actualizado
 					const results = await searchService.search(searchQuery)
 					setSearchResults(results)
 					setShowResults(true)
@@ -65,7 +65,7 @@ function HomeHero() {
 				setSearchResults([])
 				setShowResults(false)
 			}
-		}, 300) // Debounce de 300ms para evitar demasiadas solicitudes
+		}, 300) // Debounce de 300ms
 
 		return () => clearTimeout(delayDebounce)
 	}, [searchQuery])
