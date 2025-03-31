@@ -1,6 +1,23 @@
-import { LucideIcon, ArrowRight, Banknote } from "lucide-react"
+// Ruta: /src/components/common/CircleIcon/CircleIcon.tsx
+
+import { useState } from "react"
+import { LucideIcon, ArrowRight, Banknote, Headphones } from "lucide-react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
+import { useExternalLink } from "../../../hooks/useExternalLink"
+
+// Función para detectar si es dispositivo móvil
+const isMobileDevice = () => {
+	// Forzamos que siempre sea un string, incluso si algunas propiedades no existen.
+	const userAgent: string =
+		navigator.userAgent ||
+		navigator.vendor ||
+		(window as Window & { opera?: string }).opera ||
+		""
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		userAgent
+	)
+}
 
 /**
  * Props para el componente CircleIcon
@@ -20,11 +37,15 @@ interface CircleIconProps {
 	onClick?: () => void
 	/** Clases adicionales para personalizar el componente */
 	className?: string
+	/** Indica si es el botón de línea de asesor */
+	isAdvisorLine?: boolean
+	/** Mensaje configurable para mostrar en la alerta en dispositivos web */
+	advisorWebMessage?: string
 }
 
 /**
  * Componente CircleIcon con animaciones avanzadas usando Framer Motion
- * Utilizando variables CSS de GOV.CO
+ * Utilizando variables CSS de GOV.CO.
  */
 function CircleIcon({
 	icon: Icon,
@@ -34,11 +55,34 @@ function CircleIcon({
 	to,
 	onClick,
 	className = "",
+	isAdvisorLine = false,
+	advisorWebMessage = "Para hablar con un asesor, por favor llame al número 195 desde su teléfono móvil.",
 }: CircleIconProps) {
-	// Determine icon - use Banknote for payment-related icons
-	const PaymentIcon = title.toLowerCase().includes("pagar") ? Banknote : Icon
+	const [showAlert, setShowAlert] = useState(false)
 
-	// Animation variants utilizando variables CSS
+	// Determinar el ícono a usar según el tipo de botón.
+	const ActionIcon = isAdvisorLine
+		? Headphones
+		: title.toLowerCase().includes("pagar")
+		? Banknote
+		: Icon
+
+	// Manejador para el clic en la línea de asesor
+	const handleAdvisorClick = () => {
+		if (isAdvisorLine) {
+			if (isMobileDevice()) {
+				// En móvil: inicia la llamada al 195
+				window.location.href = "tel:195"
+			} else {
+				// En web: muestra un modal de alerta
+				setShowAlert(true)
+			}
+			return
+		}
+		if (onClick) onClick()
+	}
+
+	// Variantes para animaciones con Framer Motion
 	const circleVariants = {
 		initial: {
 			scale: 1,
@@ -105,30 +149,24 @@ function CircleIcon({
 		},
 	}
 
-	// Contenido interno del componente
+	// Contenido interno del ícono con animaciones
 	const content = (
 		<motion.div className="relative group" initial="initial" whileHover="hover">
-			{/* Círculo con icono y efecto de iluminación mejorado */}
 			<motion.div
 				variants={circleVariants}
 				className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-2 bg-white"
 			>
 				<motion.div variants={iconVariants} className="text-govco-danger">
-					<PaymentIcon strokeWidth={1.5} className="w-6 h-6" />
+					<ActionIcon strokeWidth={1.5} className="w-6 h-6" />
 				</motion.div>
 			</motion.div>
-
-			{/* Contenedor para título */}
 			<motion.h3
 				variants={textVariants}
 				className="text-xs font-medium text-center whitespace-nowrap mb-1"
 			>
 				{title}
 			</motion.h3>
-
-			{/* Contenedor para subtítulo/flecha con posición absoluta */}
 			<div className="relative h-4">
-				{/* Subtítulo (visible solo sin hover) */}
 				{subtitle && (
 					<motion.div
 						variants={subtitleVariants}
@@ -139,8 +177,6 @@ function CircleIcon({
 						</p>
 					</motion.div>
 				)}
-
-				{/* Flecha (visible solo con hover) - Misma posición que subtítulo */}
 				<motion.div
 					variants={arrowVariants}
 					className="absolute inset-0 flex justify-center items-center"
@@ -151,10 +187,46 @@ function CircleIcon({
 		</motion.div>
 	)
 
-	// Wrapper con clase de ancho personalizable
+	// Modal de alerta para la línea de asesor en dispositivos web
+	const AlertModal = () => (
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+			<div className="bg-white rounded-lg p-6 max-w-md m-4">
+				<h3 className="text-lg font-semibold mb-3">Línea de Atención</h3>
+				<p className="mb-4">{advisorWebMessage}</p>
+				<div className="flex justify-end">
+					<button
+						className="px-4 py-2 bg-govco-primary text-white rounded hover:bg-govco-danger"
+						onClick={() => setShowAlert(false)}
+					>
+						Entendido
+					</button>
+				</div>
+			</div>
+		</div>
+	)
+
+	// Clase contenedora
 	const wrapperClasses = `block ${className}`
 
-	// Si hay ruta interna (to), renderiza como Link de react-router
+	// Usar el hook para obtener atributos para enlaces externos (target="_blank" y rel="noopener noreferrer")
+	const externalLinkProps = useExternalLink(href)
+
+	// Caso especial: botón para línea de asesor
+	if (isAdvisorLine) {
+		return (
+			<>
+				{showAlert && <AlertModal />}
+				<div
+					className={`cursor-pointer ${wrapperClasses}`}
+					onClick={handleAdvisorClick}
+				>
+					{content}
+				</div>
+			</>
+		)
+	}
+
+	// Si se usa la prop "to", renderiza como Link de react-router
 	if (to) {
 		return (
 			<Link to={to} className={wrapperClasses} onClick={onClick}>
@@ -163,16 +235,21 @@ function CircleIcon({
 		)
 	}
 
-	// Si hay href, renderiza como enlace externo
+	// Si se usa la prop "href", renderiza como enlace externo con atributos del hook
 	if (href) {
 		return (
-			<a href={href} className={wrapperClasses} onClick={onClick}>
+			<a
+				href={href}
+				{...externalLinkProps}
+				className={wrapperClasses}
+				onClick={onClick}
+			>
 				{content}
 			</a>
 		)
 	}
 
-	// Sin href ni to, renderiza como div con onClick opcional
+	// Por defecto, renderiza un div con onClick
 	return (
 		<div className={`cursor-pointer ${wrapperClasses}`} onClick={onClick}>
 			{content}

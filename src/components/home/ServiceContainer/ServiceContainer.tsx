@@ -115,17 +115,17 @@ function ServiceContainer() {
 						<CircleIcon
 							icon={Banknote}
 							title="Quiero pagar"
-							subtitle="Bogotá te escucha"
-							href="#"
+							subtitle="Pagos Bogotá"
+							href="https://www.bogota.gov.co/servicios/pagosbogota"
 							className="mx-auto"
 						/>
 					</div>
 
-					<div className="w-20 sm:w-24 md:w-28 hidden sm:block">
+					<div className="w-20 sm:w-24 md:w-28">
 						<CircleIcon
 							icon={PhoneCall}
 							title="Quiero que me llamen"
-							subtitle="Bogotá te escucha"
+							subtitle="Ingresa tus datos"
 							href="#"
 							className="mx-auto"
 						/>
@@ -134,9 +134,10 @@ function ServiceContainer() {
 					<div className="w-20 sm:w-24 md:w-28">
 						<CircleIcon
 							icon={Headphones}
-							title="Hablar con un asesor"
-							subtitle="Bogotá te escucha"
-							href="#"
+							title="Quiero hablar con un asesor"
+							subtitle="Línea 195"
+							isAdvisorLine={true}
+							advisorWebMessage="Para comunicarte con un asesor, por favor llama al número 195 desde tu teléfono móvil."
 							className="mx-auto"
 						/>
 					</div>
@@ -144,9 +145,9 @@ function ServiceContainer() {
 					<div className="w-20 sm:w-24 md:w-28 hidden md:block">
 						<CircleIcon
 							icon={MessageSquare}
-							title="Crear petición"
+							title="Crear una petición"
 							subtitle="Bogotá te escucha"
-							href="#"
+							href="https://bogota.gov.co/servicios/bogota-te-escucha"
 							className="mx-auto"
 						/>
 					</div>
