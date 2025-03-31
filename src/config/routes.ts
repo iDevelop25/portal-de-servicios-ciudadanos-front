@@ -1,3 +1,4 @@
+// frontend/src/config/routes.ts
 import { RoutesMap } from "../types/routes.types"
 
 /**
@@ -68,6 +69,50 @@ export const ROUTES: RoutesMap = {
 		title: "Detalle de Servicio",
 		description: "Información detallada sobre el servicio",
 		exact: true,
+	},
+
+	// Rutas de administración
+	ADMIN: {
+		path: "/admin",
+		title: "Dashboard Administrativo",
+		description: "Panel de control administrativo",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_FAQS: {
+		path: "/admin/faqs",
+		title: "Gestión de FAQs",
+		description: "Administración de preguntas frecuentes",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_USERS: {
+		path: "/admin/usuarios",
+		title: "Gestión de Usuarios",
+		description: "Administración de usuarios del sistema",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_CONTENT: {
+		path: "/admin/contenido",
+		title: "Gestión de Contenido",
+		description: "Administración de contenido del portal",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_SETTINGS: {
+		path: "/admin/configuracion",
+		title: "Configuración",
+		description: "Configuración del sistema",
+		exact: true,
+		requiresAuth: true,
+	},
+	ADMIN_PROFILE: {
+		path: "/admin/perfil",
+		title: "Perfil",
+		description: "Perfil de administrador",
+		exact: true,
+		requiresAuth: true,
 	},
 
 	// Rutas que requerirán autenticación en el futuro

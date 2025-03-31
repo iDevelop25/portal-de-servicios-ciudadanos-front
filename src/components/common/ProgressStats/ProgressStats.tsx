@@ -40,7 +40,7 @@ function ProgressStats({
 
 			if (step <= steps) {
 				setCurrentValues((prevValues) =>
-					prevValues.map((value, index) => {
+					prevValues.map((_, index) => {
 						// Calcula el nuevo valor para este paso
 						const newValue = Math.min(
 							stats[index].value,

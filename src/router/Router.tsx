@@ -1,6 +1,8 @@
+// frontend/src/router/AppRouter.tsx
 import { Suspense } from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { publicRoutes } from "./routes/publicRoutes"
+import { adminRoutes } from "./routes/adminRoutes" // Importar arreglo de rutas administrativas
 import { ROUTES } from "../config/routes"
 import { env } from "../utils/env"
 
@@ -32,6 +34,11 @@ function AppRouter() {
 
 					{/* Rutas públicas */}
 					{publicRoutes.map((route) => (
+						<Route key={route.path} path={route.path} element={route.element} />
+					))}
+
+					{/* Rutas administrativas - mapeamos cada ruta directamente */}
+					{adminRoutes.map((route) => (
 						<Route key={route.path} path={route.path} element={route.element} />
 					))}
 

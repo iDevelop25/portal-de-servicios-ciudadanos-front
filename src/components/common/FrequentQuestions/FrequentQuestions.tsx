@@ -1,131 +1,140 @@
-import { useState } from "react"
-import { ChevronUp, ChevronDown } from "lucide-react"
-import { FaqItem } from "../../../types/faq.types"
+import React from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import useFaqs from "../../../hooks/useFaqs"
 
 interface FrequentQuestionsProps {
 	title?: string
-	description?: string
-	items: FaqItem[]
+	subtitle?: string
 	className?: string
 }
 
 /**
  * Componente FrequentQuestions
  *
- * Muestra una lista de preguntas frecuentes en un formato de acordeón con animaciones
+ * Muestra una lista de preguntas frecuentes con funcionalidad de acordeón
+ * y efectos de animación al abrir/cerrar cada pregunta.
  */
 function FrequentQuestions({
-	title = "Preguntas frecuentes",
-	description = "Estamos para servirte. Acá encontrará las respuestas a las preguntas más frecuentes realizadas por nuestros ciudadanos.",
-	items = [],
+	title = "Preguntas Frecuentes",
+	subtitle = "Aquí encontrarás respuestas a las dudas más comunes",
 	className = "",
 }: FrequentQuestionsProps) {
-	// Estado para manejar qué preguntas están abiertas
-	const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>(() => {
-		// Inicializar con cualquier ítem que tenga isOpen=true
-		const initialState: { [key: string]: boolean } = {}
-		items.forEach((item) => {
-			if (item.isOpen) {
-				initialState[item.id] = true
-			}
-		})
-		// Si no hay elementos abiertos por defecto, abrimos el primero
-		if (Object.keys(initialState).length === 0 && items.length > 0) {
-			initialState[items[0].id] = true
-		}
-		return initialState
-	})
+	// Usamos nuestro hook personalizado
+	const { faqs, loading, error, toggleFaq } = useFaqs()
 
-	// Función para manejar la apertura/cierre de preguntas
-	const toggleItem = (id: string) => {
-		setOpenItems((prev) => ({
-			...prev,
-			[id]: !prev[id],
-		}))
+	// Animaciones para el acordeón
+	const accordionVariants = {
+		hidden: {
+			opacity: 0,
+			height: 0,
+			transition: {
+				duration: 0.3,
+				ease: "easeInOut",
+			},
+		},
+		visible: {
+			opacity: 1,
+			height: "auto",
+			transition: {
+				duration: 0.3,
+				ease: "easeInOut",
+			},
+		},
+	}
+
+	// Animación para el icono
+	const iconVariants = {
+		closed: { rotate: 0 },
+		open: { rotate: 180 },
 	}
 
 	return (
-		<div className={`w-full py-12 ${className}`}>
-			<div className="container mx-auto max-w-4xl px-4">
+		<div className={`w-full py-12 px-4 ${className}`}>
+			<div className="container mx-auto max-w-4xl">
 				{/* Encabezado */}
 				<div className="text-center mb-10">
-					<div className="w-20 h-2 rounded-2xl bg-govco-warning mx-auto mb-4"></div>
-					<h2 className="text-2xl font-bold mb-3">{title}</h2>
-					<p className="text-govco-gray-600 max-w-3xl mx-auto text-sm mb-6">
-						{description}
-					</p>
+					<h2 className="text-3xl font-bold mb-3">{title}</h2>
+					{subtitle && <p className="text-gray-600">{subtitle}</p>}
 				</div>
 
-				{/* Lista de preguntas */}
-				<div className="space-y-4">
-					{items.map((item) => (
-						<div
-							key={item.id}
-							className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-300 hover:shadow-md"
-						>
-							{/* Encabezado de la pregunta */}
-							<button
-								className={`w-full py-4 px-6 flex justify-between items-center text-left focus:outline-none focus:ring-2 focus:ring-govco-primary focus:ring-inset focus:ring-opacity-50 transition-colors duration-300 ${
-									openItems[item.id] ? "bg-gray-50" : "hover:bg-gray-50"
-								}`}
-								onClick={() => toggleItem(item.id)}
-								aria-expanded={openItems[item.id]}
-								aria-controls={`faq-answer-${item.id}`}
-							>
-								<h3
-									className={`font-medium transition-colors duration-300 ${
-										openItems[item.id]
-											? "text-govco-danger"
-											: "text-govco-gray-900"
-									}`}
-								>
-									{item.question}
-								</h3>
-								<div
-									className={`ml-2 flex-shrink-0 transition-all duration-300 transform ${
-										openItems[item.id]
-											? "text-govco-danger"
-											: "text-govco-gray-400"
-									}`}
-								>
-									{openItems[item.id] ? (
-										<ChevronUp
-											size={20}
-											className="transition-transform duration-300"
-										/>
-									) : (
-										<ChevronDown
-											size={20}
-											className="transition-transform duration-300"
-										/>
-									)}
-								</div>
-							</button>
+				{/* Estado de carga */}
+				{loading && (
+					<div className="flex justify-center my-8">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+					</div>
+				)}
 
-							{/* Contenido de la respuesta (colapsable con animación) */}
+				{/* Mensaje de error */}
+				{error && (
+					<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
+						<strong className="font-bold">Error:</strong>
+						<span className="block sm:inline"> {error}</span>
+					</div>
+				)}
+
+				{/* Lista de FAQs */}
+				{!loading && faqs.length > 0 && (
+					<div className="space-y-4">
+						{faqs.map((faq) => (
 							<div
-								id={`faq-answer-${item.id}`}
-								className={`overflow-hidden transition-all duration-300 ease-in-out ${
-									openItems[item.id]
-										? "max-h-96 opacity-100"
-										: "max-h-0 opacity-0"
-								}`}
-								style={{
-									transitionProperty: "max-height, opacity, padding",
-									maxHeight: openItems[item.id] ? "500px" : "0px",
-								}}
+								key={faq.id}
+								className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
 							>
-								<div
-									className={`px-6 pb-5 pt-2 text-govco-gray-600 border-t border-gray-100 transition-all duration-300 ${
-										openItems[item.id] ? "opacity-100" : "opacity-0"
-									}`}
+								{/* Pregunta (cabecera del acordeón) */}
+								<button
+									className="w-full px-6 py-4 text-left bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors duration-200"
+									onClick={() => toggleFaq(faq.id)}
+									aria-expanded={faq.isOpen}
 								>
-									{item.answer}
-								</div>
+									<span className="font-medium">{faq.question}</span>
+									<motion.span
+										className="text-blue-500"
+										animate={faq.isOpen ? "open" : "closed"}
+										variants={iconVariants}
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-5 w-5"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+										>
+											<path
+												fillRule="evenodd"
+												d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</motion.span>
+								</button>
+
+								{/* Respuesta (contenido del acordeón) */}
+								<AnimatePresence>
+									{faq.isOpen && (
+										<motion.div
+											key={`answer-${faq.id}`}
+											initial="hidden"
+											animate="visible"
+											exit="hidden"
+											variants={accordionVariants}
+											className="overflow-hidden"
+										>
+											<div className="px-6 py-4 bg-white">
+												<p className="text-gray-700">{faq.answer}</p>
+											</div>
+										</motion.div>
+									)}
+								</AnimatePresence>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				)}
+
+				{/* Mensaje cuando no hay FAQs */}
+				{!loading && faqs.length === 0 && !error && (
+					<div className="text-center py-8 text-gray-500">
+						No se encontraron preguntas frecuentes.
+					</div>
+				)}
 			</div>
 		</div>
 	)
