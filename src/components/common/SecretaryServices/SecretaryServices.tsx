@@ -239,7 +239,7 @@ function SecretaryServices({
 							className={`py-2 px-6 rounded-full text-sm font-medium transition-colors ${
 								activeFilter === "tramites"
 									? "bg-emerald-500 text-white"
-									: "bg-white text-govco-gray-700 border border-govco-gray-300 hover:bg-govco-gray-100"
+									: "bg-white text-emerald-700 border border-emerald-500 hover:bg-emerald-50"
 							}`}
 							onClick={() => setActiveFilter("tramites")}
 						>
@@ -249,7 +249,7 @@ function SecretaryServices({
 							className={`py-2 px-6 rounded-full text-sm font-medium transition-colors ${
 								activeFilter === "servicios"
 									? "bg-blue-500 text-white"
-									: "bg-white text-govco-gray-700 border border-govco-gray-300 hover:bg-govco-gray-100"
+									: "bg-white text-blue-700 border border-blue-500 hover:bg-blue-50"
 							}`}
 							onClick={() => setActiveFilter("servicios")}
 						>
