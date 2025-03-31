@@ -17,6 +17,8 @@
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.0.14",
+		"axios": "^1.8.4",
+		"date-fns": "^4.1.0",
 		"formik": "^2.4.6",
 		"framer-motion": "^12.5.0",
 		"lucide-react": "^0.482.0",
