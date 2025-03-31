@@ -8,6 +8,10 @@ const ServiceRoute = React.lazy(
 	() => import("../../pages/ServiceRoute/ServiceRoute")
 )
 
+const Reservation = React.lazy(
+	() => import("../../pages/ReservationPage/ReservationPage")
+)
+
 // Página 404 (Not Found)
 const NotFound = React.lazy(() =>
 	import("../../pages/NotFound/NotFound").catch(() => {
@@ -37,7 +41,10 @@ export const publicRoutes: RouteObject[] = [
 		path: ROUTES.SERVICIO_DETALLE.path,
 		element: <ServiceRoute />,
 	},
-	// Aquí se agregarían más rutas públicas
+	{
+		path: ROUTES.RESERVATION.path,
+		element: <Reservation />,
+	},
 
 	// Ruta para manejar URLs no encontradas (debe ir al final)
 	{

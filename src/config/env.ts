@@ -42,3 +42,7 @@ export const isDevelopment = ENV === "development"
 
 // Verificar si estamos en staging
 export const isStaging = ENV === "staging"
+
+// URL reserva de turnos
+export const RESERVATION_URL =
+	import.meta.env.VITE_APP_RESERVATION_URL || "https://10.101.5.111:4433"

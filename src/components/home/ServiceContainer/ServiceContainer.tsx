@@ -156,7 +156,7 @@ function ServiceContainer() {
 							icon={Calendar}
 							title="Reservar turno"
 							subtitle="Bogotá te escucha"
-							href="#"
+							to="/reservar-turno" // Usar 'to' para navegación interna
 							className="mx-auto"
 						/>
 					</div>

@@ -1,5 +1,6 @@
 import { LucideIcon, ArrowRight, Banknote } from "lucide-react"
 import { motion } from "framer-motion"
+import { Link } from "react-router-dom"
 
 /**
  * Props para el componente CircleIcon
@@ -13,6 +14,8 @@ interface CircleIconProps {
 	subtitle?: string
 	/** URL para enlace (opcional) */
 	href?: string
+	/** URL interna para react-router (opcional) */
+	to?: string
 	/** Función onClick (opcional) */
 	onClick?: () => void
 	/** Clases adicionales para personalizar el componente */
@@ -28,6 +31,7 @@ function CircleIcon({
 	title,
 	subtitle,
 	href,
+	to,
 	onClick,
 	className = "",
 }: CircleIconProps) {
@@ -150,7 +154,16 @@ function CircleIcon({
 	// Wrapper con clase de ancho personalizable
 	const wrapperClasses = `block ${className}`
 
-	// Si hay href, renderiza como enlace
+	// Si hay ruta interna (to), renderiza como Link de react-router
+	if (to) {
+		return (
+			<Link to={to} className={wrapperClasses} onClick={onClick}>
+				{content}
+			</Link>
+		)
+	}
+
+	// Si hay href, renderiza como enlace externo
 	if (href) {
 		return (
 			<a href={href} className={wrapperClasses} onClick={onClick}>
@@ -159,7 +172,7 @@ function CircleIcon({
 		)
 	}
 
-	// Sin href, renderiza como div con onClick opcional
+	// Sin href ni to, renderiza como div con onClick opcional
 	return (
 		<div className={`cursor-pointer ${wrapperClasses}`} onClick={onClick}>
 			{content}

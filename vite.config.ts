@@ -57,6 +57,23 @@ export default defineConfig(({ mode }) => {
 			open: mode === "development",
 			// Configura CORS para desarrollo
 			cors: true,
+			// Configuración para permitir contenido mixto (HTTP en HTTPS) en desarrollo
+			https:
+				mode !== "development"
+					? {
+							// Aquí podrías agregar tus certificados para HTTPS local si fuera necesario
+					  }
+					: false,
+			// Configuración de proxy para el sistema de reservas en desarrollo
+			proxy: {
+				// Configuración de proxy para el sistema de reserva
+				"/reservation-proxy": {
+					target: envVars.VITE_APP_RESERVATION_URL,
+					changeOrigin: true,
+					rewrite: (path) => path.replace(/^\/reservation-proxy/, ""),
+					secure: envVars.VITE_APP_SECURE_IFRAME === "true",
+				},
+			},
 		},
 	}
 })

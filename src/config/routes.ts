@@ -71,6 +71,14 @@ export const ROUTES: RoutesMap = {
 		exact: true,
 	},
 
+	// Rutas reservación de turnos
+	RESERVATION: {
+		path: "/reservar-turno",
+		title: "Reserva de Turnos",
+		description: "Sistema de reserva de turnos para atención presencial",
+		exact: true,
+	},
+
 	// Rutas de administración
 	ADMIN: {
 		path: "/admin",

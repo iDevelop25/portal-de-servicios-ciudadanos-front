@@ -34,6 +34,19 @@ export const env = {
 	BASE_URL: import.meta.env.VITE_APP_BASE_URL as string,
 
 	/**
+	 * URL del sistema de reserva de turnos
+	 */
+	RESERVATION_URL:
+		(import.meta.env.VITE_APP_RESERVATION_URL as string) ||
+		"https://10.101.5.111:4433",
+
+	/**
+	 * Indica si se debe mostrar la guía para el certificado SSL
+	 */
+	SHOW_CERT_GUIDE:
+		(import.meta.env.VITE_APP_SHOW_CERT_GUIDE as string) === "true",
+
+	/**
 	 * Obtiene una variable de entorno específica
 	 * @param key - Nombre de la variable de entorno
 	 * @param defaultValue - Valor por defecto si la variable no existe
