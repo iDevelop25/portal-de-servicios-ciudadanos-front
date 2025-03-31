@@ -176,9 +176,9 @@ function ServiceContainer() {
 						<div className="w-20 h-2 rounded-2xl bg-govco-warning mx-auto mb-4"></div>
 						<h2 className="text-2xl font-bold mb-3">Rutas de servicio</h2>
 						<p className="text-govco-gray-600 max-w-3xl mx-auto text-sm mb-6">
-							Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar
-							la calidad de vida de todas y todos los ciudadanos, abordando
-							problemas y creando oportunidades para un futuro mejor
+							Conoce las rutas de servicio que hemos diseñado para hacer más
+							fácil tu experiencia de conocer y acceder a la oferta que tiene el
+							distrito.
 						</p>
 					</div>
 
