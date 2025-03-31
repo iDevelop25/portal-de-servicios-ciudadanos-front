@@ -12,6 +12,7 @@ import {
 	ChevronDown,
 	Save,
 	Eye,
+	Loader,
 } from "lucide-react"
 import DashboardLayout from "../../../components/layout/DashboardLayout"
 import useFaqs from "../../../hooks/useFaqs"
@@ -43,7 +44,7 @@ function FaqManager() {
 	const [formState, setFormState] = useState<FormState>(initialFormState)
 	const [editingId, setEditingId] = useState<number | null>(null)
 
-	// Estados para la confirmación de eliminación
+	// Estado para el diálogo de confirmación de eliminación
 	const [confirmDelete, setConfirmDelete] = useState<number | null>(null)
 
 	// Estados para búsqueda y filtrado
@@ -86,9 +87,8 @@ function FaqManager() {
 
 			// Recargar datos
 			await getAllFaqs()
-			showAlert("success", "Orden actualizado correctamente")
+			showAlert("success", "Orden actualizada correctamente")
 		} catch {
-			// Simplemente mostramos el mensaje de error sin usar la variable
 			showAlert("error", "Error al actualizar el orden")
 		}
 	}
@@ -219,7 +219,7 @@ function FaqManager() {
 			{/* Alertas */}
 			{alert && (
 				<div
-					className={`mb-4 p-4 rounded-lg ${
+					className={`mb-4 p-4 rounded-lg cursor-pointer ${
 						alert.type === "success"
 							? "bg-green-100 text-green-800"
 							: alert.type === "error"
@@ -237,7 +237,7 @@ function FaqManager() {
 					<span>{alert.message}</span>
 					<button
 						onClick={() => setAlert(null)}
-						className="ml-auto text-gray-500 hover:text-gray-700"
+						className="ml-auto text-gray-500 hover:text-gray-700 cursor-pointer"
 					>
 						<X size={16} />
 					</button>
@@ -245,11 +245,11 @@ function FaqManager() {
 			)}
 
 			{/* Barra de herramientas */}
-			<div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+			<div className="bg-white rounded-lg shadow-md p-6 mb-6 cursor-pointer">
 				<div className="flex flex-col md:flex-row md:items-center gap-4">
 					<button
 						onClick={handleCreateNew}
-						className="flex items-center gap-2 bg-govco-primary text-white py-2 px-4 rounded-md hover:bg-govco-primary/90 transition-colors"
+						className="flex items-center gap-2 bg-govco-primary text-white py-2 px-4 rounded-lg hover:bg-govco-secondary transition-colors cursor-pointer"
 					>
 						<Plus size={18} />
 						<span>Crear nueva pregunta</span>
@@ -264,7 +264,7 @@ function FaqManager() {
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder="Buscar preguntas..."
-							className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-govco-primary"
+							className="pl-9 pr-4 py-2 border rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-govco-primary"
 						/>
 					</div>
 
@@ -276,7 +276,7 @@ function FaqManager() {
 								onChange={() => setFilterActive(!filterActive)}
 								className="sr-only peer"
 							/>
-							<div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-govco-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-govco-primary"></div>
+							<div className="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-govco-primary peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-govco-primary"></div>
 							<span className="ml-3 text-sm font-medium text-gray-900">
 								Mostrar solo activas
 							</span>
@@ -287,7 +287,7 @@ function FaqManager() {
 
 			{/* Formulario */}
 			{showForm && (
-				<div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+				<div className="bg-white rounded-lg shadow-md p-6 mb-6 cursor-pointer">
 					<h3 className="text-lg font-medium mb-4">
 						{formMode === "create" ? "Crear nueva pregunta" : "Editar pregunta"}
 					</h3>
@@ -305,7 +305,7 @@ function FaqManager() {
 										setFormState({ ...formState, question: e.target.value })
 									}
 									placeholder="Ingrese la pregunta"
-									className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-govco-primary"
+									className="block w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-govco-primary cursor-pointer"
 									required
 								/>
 							</div>
@@ -321,12 +321,12 @@ function FaqManager() {
 									}
 									placeholder="Ingrese la respuesta"
 									rows={4}
-									className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-govco-primary"
+									className="block w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-govco-primary cursor-pointer"
 									required
 								/>
 							</div>
 
-							<div className="flex items-center">
+							<div className="flex items-center cursor-pointer">
 								<label className="inline-flex items-center cursor-pointer">
 									<input
 										type="checkbox"
@@ -336,7 +336,7 @@ function FaqManager() {
 										}
 										className="sr-only peer"
 									/>
-									<div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-govco-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-govco-primary"></div>
+									<div className="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-govco-primary peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-govco-primary"></div>
 									<span className="ml-3 text-sm font-medium text-gray-900">
 										Mostrar expandida por defecto
 									</span>
@@ -357,7 +357,7 @@ function FaqManager() {
 											order: parseInt(e.target.value) || 0,
 										})
 									}
-									className="block w-24 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-govco-primary"
+									className="block w-24 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-govco-primary cursor-pointer"
 								/>
 							</div>
 						</div>
@@ -366,13 +366,13 @@ function FaqManager() {
 							<button
 								type="button"
 								onClick={resetForm}
-								className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+								className="py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
 							>
 								Cancelar
 							</button>
 							<button
 								type="submit"
-								className="flex items-center gap-2 py-2 px-4 bg-govco-primary text-white rounded-md hover:bg-govco-primary/90 transition-colors"
+								className="flex items-center gap-2 py-2 px-4 bg-govco-primary text-white rounded-lg hover:bg-govco-secondary transition-colors cursor-pointer"
 							>
 								<Save size={18} />
 								Guardar
@@ -383,43 +383,61 @@ function FaqManager() {
 			)}
 
 			{/* Lista de FAQs */}
-			<div className="bg-white rounded-lg shadow-sm overflow-hidden">
+			<div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
 				<div className="p-4 border-b">
 					<h3 className="text-lg font-medium">Lista de preguntas frecuentes</h3>
 				</div>
 
 				{loading ? (
-					<div className="p-8 text-center">
-						<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-govco-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-						<p className="mt-2 text-gray-600">
-							Cargando preguntas frecuentes...
-						</p>
+					<div className="flex justify-center my-12">
+						<div className="flex flex-col items-center">
+							<Loader
+								size={36}
+								className="animate-spin text-govco-primary mb-2"
+							/>
+							<p className="text-govco-gray-600">
+								Cargando preguntas frecuentes...
+							</p>
+						</div>
 					</div>
 				) : error ? (
-					<div className="p-6 text-center">
-						<AlertTriangle size={32} className="mx-auto text-red-500 mb-2" />
-						<p className="text-red-600">{error}</p>
-						<button
-							onClick={() => getAllFaqs()}
-							className="mt-4 py-2 px-4 bg-govco-primary text-white rounded-md hover:bg-govco-primary/90 transition-colors"
-						>
-							Reintentar
-						</button>
+					<div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 cursor-pointer">
+						<div className="flex">
+							<div className="flex-shrink-0">
+								<AlertTriangle size={32} className="text-red-400" />
+							</div>
+							<div className="ml-3">
+								<p className="text-sm text-red-700">{error}</p>
+							</div>
+							<div className="ml-auto pl-3">
+								<button
+									onClick={() => getAllFaqs()}
+									className="inline-flex rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none cursor-pointer"
+								>
+									<X size={16} />
+								</button>
+							</div>
+						</div>
 					</div>
 				) : filteredFaqs.length === 0 ? (
-					<div className="p-6 text-center text-gray-500">
-						<p>No se encontraron preguntas frecuentes</p>
+					<div className="text-center py-10 border rounded-lg bg-gray-50 cursor-pointer">
+						<p className="text-govco-gray-600 mb-2">
+							No se encontraron preguntas frecuentes
+						</p>
 						{searchQuery && (
-							<button
-								onClick={() => setSearchQuery("")}
-								className="mt-2 text-govco-primary hover:underline"
-							>
-								Limpiar búsqueda
-							</button>
+							<p className="text-govco-gray-500 text-sm">
+								Intenta con otro término de búsqueda o{" "}
+								<button
+									onClick={() => setSearchQuery("")}
+									className="text-govco-primary ml-1 hover:underline cursor-pointer"
+								>
+									ver todas las preguntas
+								</button>
+							</p>
 						)}
 					</div>
 				) : (
-					<div className="divide-y">
+					<div className="divide-y cursor-pointer">
 						{filteredFaqs.map((faq) => (
 							<div
 								key={faq.id}
@@ -458,7 +476,7 @@ function FaqManager() {
 											<button
 												onClick={() => handleReorder(faq.id, "up")}
 												disabled={faq.order <= 1}
-												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed"
+												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 												title="Mover arriba"
 											>
 												<ChevronUp size={16} />
@@ -466,7 +484,7 @@ function FaqManager() {
 											<button
 												onClick={() => handleReorder(faq.id, "down")}
 												disabled={faq.order >= faqs.length}
-												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed"
+												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 												title="Mover abajo"
 											>
 												<ChevronDown size={16} />
@@ -477,21 +495,31 @@ function FaqManager() {
 										<div className="flex gap-1">
 											<button
 												onClick={() => handleEdit(faq)}
-												className="p-1.5 text-gray-500 hover:text-govco-primary hover:bg-govco-primary/10 rounded-md"
+												className="p-1.5 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 rounded-md cursor-pointer"
 												title="Editar"
 											>
 												<Edit size={16} />
 											</button>
 											<button
 												onClick={() => handleToggleActive(faq.id, faq.isActive)}
-												className="p-1.5 text-gray-500 hover:text-govco-primary hover:bg-govco-primary/10 rounded-md"
+												className="p-1.5 rounded-md hover:bg-green-50 cursor-pointer"
 												title={faq.isActive ? "Desactivar" : "Activar"}
 											>
-												{faq.isActive ? <X size={16} /> : <Check size={16} />}
+												{faq.isActive ? (
+													<X
+														size={16}
+														className="text-red-600 hover:text-red-900"
+													/>
+												) : (
+													<Check
+														size={16}
+														className="text-green-600 hover:text-green-900"
+													/>
+												)}
 											</button>
 											<button
 												onClick={() => setConfirmDelete(faq.id)}
-												className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-md"
+												className="p-1.5 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-md cursor-pointer"
 												title="Eliminar"
 											>
 												<Trash2 size={16} />
@@ -499,35 +527,42 @@ function FaqManager() {
 										</div>
 									</div>
 								</div>
-
-								{/* Confirmación de eliminación */}
-								{confirmDelete === faq.id && (
-									<div className="mt-4 p-4 bg-red-50 rounded-md">
-										<p className="text-red-700 mb-3 font-medium">
-											¿Está seguro de que desea eliminar esta pregunta
-											frecuente?
-										</p>
-										<div className="flex gap-3 justify-end">
-											<button
-												onClick={() => setConfirmDelete(null)}
-												className="py-1 px-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-											>
-												Cancelar
-											</button>
-											<button
-												onClick={() => handleDelete(faq.id)}
-												className="py-1 px-3 bg-red-600 text-white rounded-md hover:bg-red-700"
-											>
-												Eliminar
-											</button>
-										</div>
-									</div>
-								)}
 							</div>
 						))}
 					</div>
 				)}
 			</div>
+
+			{/* Modal de confirmación para eliminación */}
+			{confirmDelete !== null && (
+				<div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-30 flex items-center justify-center p-4 cursor-pointer">
+					<div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+						<h3 className="text-lg font-bold text-govco-gray-900 mb-4">
+							Confirmar eliminación
+						</h3>
+						<p className="text-govco-gray-600 mb-6">
+							¿Está seguro de que desea eliminar esta pregunta frecuente? Esta
+							acción no se puede deshacer.
+						</p>
+						<div className="flex justify-end space-x-3">
+							<button
+								onClick={() => setConfirmDelete(null)}
+								className="px-4 py-2 border border-gray-300 rounded-lg text-govco-gray-700 hover:bg-gray-50 cursor-pointer"
+							>
+								Cancelar
+							</button>
+							<button
+								onClick={() => {
+									if (confirmDelete) handleDelete(confirmDelete)
+								}}
+								className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
+							>
+								Eliminar
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</DashboardLayout>
 	)
 }

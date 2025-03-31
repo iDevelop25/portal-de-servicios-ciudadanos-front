@@ -53,9 +53,9 @@ export interface SliderProps {
 // Tipos para el componente CardSlider
 export interface CardSliderProps {
 	/**
-	 * Array de elementos hijos para mostrar en el slider
+	 * Array de elementos hijos o un solo elemento hijo para mostrar en el slider
 	 */
-	children: React.ReactNode[]
+	children: React.ReactNode | React.ReactNode[]
 
 	/**
 	 * Título opcional para la sección del slider

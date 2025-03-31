@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { CardSliderProps } from "../../../types/slider.types"
+import React from "react"
 
 /**
  * Componente CardSlider
@@ -24,6 +25,9 @@ function CardSlider({
 	const containerRef = useRef<HTMLDivElement>(null)
 	const autoplayTimerRef = useRef<number | null>(null)
 
+	// Convertir children a array si es un solo elemento
+	const childrenArray = React.Children.toArray(children)
+
 	// Calcular el número máximo de slides según el ancho del contenedor
 	useEffect(() => {
 		const updateSliderMetrics = () => {
@@ -32,14 +36,14 @@ function CardSlider({
 				const actualVisibleCards = Math.floor(
 					containerWidth / (cardWidth + gap)
 				)
-				setMaxIndex(Math.max(0, children.length - actualVisibleCards))
+				setMaxIndex(Math.max(0, childrenArray.length - actualVisibleCards))
 			}
 		}
 
 		updateSliderMetrics()
 		window.addEventListener("resize", updateSliderMetrics)
 		return () => window.removeEventListener("resize", updateSliderMetrics)
-	}, [children.length, cardWidth, gap])
+	}, [childrenArray.length, cardWidth, gap])
 
 	// Navegar al slider anterior
 	const goToPrevious = useCallback(() => {
@@ -90,7 +94,7 @@ function CardSlider({
 	const translateX = -currentIndex * (cardWidth + gap)
 
 	// Verificar si hay suficientes elementos para justificar el slider
-	const shouldShowNavigation = children.length > visibleCards
+	const shouldShowNavigation = childrenArray.length > visibleCards
 
 	return (
 		<div
@@ -130,7 +134,7 @@ function CardSlider({
 						}}
 					>
 						{/* Mapear los elementos hijos con espaciado */}
-						{children.map((card, index) => (
+						{childrenArray.map((card, index) => (
 							<div
 								key={index}
 								className="flex-shrink-0"

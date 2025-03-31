@@ -3,17 +3,14 @@ import ServiceCard from "../../common/ServiceCard"
 import TramiteCard from "../../common/TramiteCard"
 import CardSlider from "../../common/CardSlider"
 import SecretaryServices from "../../common/SecretaryServices"
-import { ServiceRoute, Tramite } from "../../../types/service.types"
+import { ServiceRoute } from "../../../types/service.types"
+import { useTopItems } from "../../../hooks/useTopItems"
 import {
 	Banknote,
 	PhoneCall,
 	Headphones,
 	MessageSquare,
 	Calendar,
-	Car,
-	FileText,
-	FileSpreadsheet,
-	CreditCard,
 } from "lucide-react"
 
 // Importamos las imágenes locales
@@ -57,55 +54,19 @@ const serviceRoutesData: ServiceRoute[] = [
 ]
 
 /**
- * Datos de ejemplo de trámites más consultados
- * En un futuro, estos datos vendrán de un backend
- */
-const tramitesData: Tramite[] = [
-	{
-		id: "pico-placa",
-		title: "Exención de pico y placa",
-		icon: Car,
-		link: "/tramites/exencion-pico-placa",
-	},
-	{
-		id: "impuesto-predial",
-		title: "Impuesto predial unificado",
-		icon: FileText,
-		link: "/tramites/impuesto-predial",
-	},
-	{
-		id: "ficha-catastral",
-		title: "Ficha catastral de predio",
-		icon: FileSpreadsheet,
-		link: "/tramites/ficha-catastral",
-	},
-	{
-		id: "pago-fotomultas",
-		title: "Pago Fotomultas",
-		icon: CreditCard,
-		link: "/tramites/pago-fotomultas",
-	},
-	{
-		id: "certificado-tradicion",
-		title: "Certificado de tradición",
-		icon: FileText,
-		link: "/tramites/certificado-tradicion",
-	},
-	{
-		id: "licencia-construccion",
-		title: "Licencia de construcción",
-		icon: FileSpreadsheet,
-		link: "/tramites/licencia-construccion",
-	},
-]
-
-/**
  * Componente ServiceContainer
  *
  * Contenedor principal que se muestra debajo del slider para mostrar servicios destacados
  * y rutas de servicio en un contenedor único.
  */
 function ServiceContainer() {
+	// Usar el hook para obtener los trámites más consultados de forma dinámica
+	const {
+		tramites: tramitesData,
+		loading: tramitesLoading,
+		error: tramitesError,
+	} = useTopItems(6)
+
 	return (
 		<div className="flex justify-center w-full relative -mt-2 mb-28 md:mb-15 z-20">
 			<div className="w-full max-w-[80%] bg-white rounded-lg shadow-lg pt-10 px-4 pb-12 relative">
@@ -197,13 +158,32 @@ function ServiceContainer() {
 							gap={24}
 							visibleCards={4}
 						>
-							{tramitesData.map((tramite) => (
-								<TramiteCard
-									key={tramite.id}
-									tramite={tramite}
-									className="h-full"
-								/>
-							))}
+							{tramitesLoading
+								? Array(4)
+										.fill(0)
+										.map((_, index) => (
+											<div
+												key={`skeleton-${index}`}
+												className="h-full p-4 bg-gray-100 rounded-lg animate-pulse"
+											>
+												<div className="w-10 h-10 bg-gray-200 rounded-full mb-4"></div>
+												<div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+												<div className="h-4 bg-gray-200 rounded w-1/2"></div>
+											</div>
+										))
+								: tramitesError
+								? [
+										<div key="error" className="p-4 text-red-500">
+											No se pudieron cargar los trámites más consultados
+										</div>,
+								  ]
+								: tramitesData.map((tramite) => (
+										<TramiteCard
+											key={tramite.id}
+											tramite={tramite}
+											className="h-full"
+										/>
+								  ))}
 						</CardSlider>
 					</div>
 
