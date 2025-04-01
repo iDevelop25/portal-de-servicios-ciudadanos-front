@@ -66,27 +66,106 @@ export default defineConfig(({ mode }) => {
 							// Aquí podrías agregar tus certificados para HTTPS local si fuera necesario
 					  }
 					: false,
-			// Configuración de proxy para API y otros servicios
+			// Configuración de proxy para los diferentes servicios
 			proxy: {
-				// Proxy para el sistema de reserva
+				// Configuración del proxy para sistema de reservas
 				"/reservation-proxy": {
-					target: envVars.VITE_APP_RESERVATION_URL,
+					target:
+						envVars.VITE_APP_RESERVATION_URL || "https://10.101.5.111:4433",
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/reservation-proxy/, ""),
-					secure: envVars.VITE_APP_SECURE_IFRAME === "true",
+					configure: (proxy) => {
+						// Ignorar errores de SSL
+						proxy.on("error", (err, req, res) => {
+							console.warn("Proxy error:", err)
+							// Proporcionar una respuesta personalizada en caso de error de proxy
+							if (res.writeHead && !res.headersSent) {
+								res.writeHead(500, {
+									"Content-Type": "text/plain",
+								})
+								res.end(
+									"Error de conexión con el servidor de reservas. Por favor intente más tarde."
+								)
+							}
+						})
+					},
+					// MUY IMPORTANTE: Deshabilitar verificación SSL para desarrollo
+					secure: false,
+					// Intentar preservar fuentes originales
+					ws: true,
 				},
 				// Proxy para API de búsqueda y top consultados
 				"/api/master": {
 					target: "http://10.101.5.61:8082",
 					changeOrigin: true,
 					secure: false,
+					configure: (proxy) => {
+						proxy.on("error", (err, req, res) => {
+							console.warn("API Master proxy error:", err)
+							if (res.writeHead && !res.headersSent) {
+								res.writeHead(500, {
+									"Content-Type": "application/json",
+								})
+								res.end(
+									JSON.stringify({
+										success: false,
+										message:
+											"Error de conexión con el servicio. Por favor intente más tarde.",
+									})
+								)
+							}
+						})
+					},
 				},
 				// Proxy para cualquier otra API
 				"/api": {
-					target: envVars.VITE_APP_API_URL,
+					target: envVars.VITE_APP_API_URL || "http://localhost:4000",
 					changeOrigin: true,
 					secure: false,
+					configure: (proxy) => {
+						proxy.on("error", (err, req, res) => {
+							console.warn("API proxy error:", err)
+							if (res.writeHead && !res.headersSent) {
+								res.writeHead(500, {
+									"Content-Type": "application/json",
+								})
+								res.end(
+									JSON.stringify({
+										success: false,
+										message:
+											"Error de conexión con la API. Por favor intente más tarde.",
+									})
+								)
+							}
+						})
+					},
 				},
+			},
+		},
+
+		// Optimizaciones adicionales para cualquier problema de resolución de módulos
+		resolve: {
+			// Alias para resolver rutas de importación
+			alias: {
+				"@": "/src",
+				assets: "/src/assets",
+			},
+		},
+
+		// Optimizaciones de construcción
+		optimizeDeps: {
+			// Forzar incluir dependencias problemáticas en el proceso de optimización
+			include: ["react", "react-dom", "react-router-dom", "lucide-react"],
+			// Excluir dependencias que causan problemas
+			exclude: [],
+		},
+
+		// Configuración de CSS
+		css: {
+			// Habilitar módulos CSS para archivos .module.css/.module.scss
+			modules: {
+				scopeBehaviour: "local",
+				localsConvention: "camelCase",
 			},
 		},
 	}
