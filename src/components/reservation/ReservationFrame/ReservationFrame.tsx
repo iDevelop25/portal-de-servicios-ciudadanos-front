@@ -1,6 +1,9 @@
+// Archivo: /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/components/reservation/ReservationFrame/ReservationFrame.tsx
+
 import { useState, useEffect } from "react"
 import { env } from "../../../utils/env"
 import { AlertTriangle, ExternalLink, Info, ChevronRight } from "lucide-react"
+import IframeSecure from "../../common/IframeSecure"
 
 interface ReservationFrameProps {
 	className?: string
@@ -15,6 +18,7 @@ interface ReservationFrameProps {
 function ReservationFrame({ className = "" }: ReservationFrameProps) {
 	const [isFirstVisit, setIsFirstVisit] = useState(true)
 	const [currentStep, setCurrentStep] = useState(1)
+	const [showIframe, setShowIframe] = useState(false)
 
 	// Comprobar si ya visitó antes
 	useEffect(() => {
@@ -28,28 +32,36 @@ function ReservationFrame({ className = "" }: ReservationFrameProps) {
 		// Guardar en localStorage que ya no es primera visita
 		localStorage.setItem("reservation_visited", "true")
 		setIsFirstVisit(false)
-
-		// Abrir en nueva ventana
-		window.open(env.RESERVATION_URL, "_blank")
+		setShowIframe(true)
 	}
 
 	const resetGuide = () => {
 		localStorage.removeItem("reservation_visited")
 		setIsFirstVisit(true)
 		setCurrentStep(1)
+		setShowIframe(false)
 	}
 
 	// No mostrar guía en producción/staging a menos que se fuerce
 	if (!env.SHOW_CERT_GUIDE && !env.isDevelopment) {
 		return (
 			<div className={`w-full text-center ${className}`}>
-				<button
-					onClick={() => window.open(env.RESERVATION_URL, "_blank")}
-					className="flex items-center justify-center mx-auto px-6 py-3 bg-govco-primary text-white rounded-full hover:bg-govco-secondary transition-colors"
-				>
-					<span>Abrir Sistema de Reserva de Turnos</span>
-					<ExternalLink className="ml-2" size={18} />
-				</button>
+				{showIframe ? (
+					<IframeSecure
+						src={env.RESERVATION_URL}
+						title="Sistema de Reserva de Turnos"
+						height="600px"
+						className="mt-4 w-full"
+					/>
+				) : (
+					<button
+						onClick={() => setShowIframe(true)}
+						className="flex items-center justify-center mx-auto px-6 py-3 bg-govco-primary text-white rounded-full hover:bg-govco-secondary transition-colors"
+					>
+						<span>Abrir Sistema de Reserva de Turnos</span>
+						<ExternalLink className="ml-2" size={18} />
+					</button>
+				)}
 			</div>
 		)
 	}
@@ -283,22 +295,31 @@ function ReservationFrame({ className = "" }: ReservationFrameProps) {
 						acceder.
 					</p>
 
-					<div className="flex flex-col sm:flex-row justify-center gap-4">
-						<button
-							onClick={() => window.open(env.RESERVATION_URL, "_blank")}
-							className="px-6 py-3 bg-govco-primary text-white rounded-full hover:bg-govco-secondary transition-colors flex items-center justify-center mx-auto"
-						>
-							<span>Abrir Sistema de Reserva de Turnos</span>
-							<ExternalLink className="ml-2" size={18} />
-						</button>
+					{showIframe ? (
+						<IframeSecure
+							src={env.RESERVATION_URL}
+							title="Sistema de Reserva de Turnos"
+							height="600px"
+							className="mt-4 w-full"
+						/>
+					) : (
+						<div className="flex flex-col sm:flex-row justify-center gap-4">
+							<button
+								onClick={() => setShowIframe(true)}
+								className="px-6 py-3 bg-govco-primary text-white rounded-full hover:bg-govco-secondary transition-colors flex items-center justify-center mx-auto"
+							>
+								<span>Abrir Sistema de Reserva de Turnos</span>
+								<ExternalLink className="ml-2" size={18} />
+							</button>
 
-						<button
-							onClick={resetGuide}
-							className="text-govco-primary text-sm hover:underline"
-						>
-							Ver instrucciones de nuevo
-						</button>
-					</div>
+							<button
+								onClick={resetGuide}
+								className="text-govco-primary text-sm hover:underline"
+							>
+								Ver instrucciones de nuevo
+							</button>
+						</div>
+					)}
 				</div>
 			)}
 		</div>

@@ -1,3 +1,5 @@
+// Archivo: /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/vite.config.ts
+
 import { defineConfig, loadEnv } from "vite"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
@@ -64,14 +66,26 @@ export default defineConfig(({ mode }) => {
 							// Aquí podrías agregar tus certificados para HTTPS local si fuera necesario
 					  }
 					: false,
-			// Configuración de proxy para el sistema de reservas en desarrollo
+			// Configuración de proxy para API y otros servicios
 			proxy: {
-				// Configuración de proxy para el sistema de reserva
+				// Proxy para el sistema de reserva
 				"/reservation-proxy": {
 					target: envVars.VITE_APP_RESERVATION_URL,
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/reservation-proxy/, ""),
 					secure: envVars.VITE_APP_SECURE_IFRAME === "true",
+				},
+				// Proxy para API de búsqueda y top consultados
+				"/api/master": {
+					target: "http://10.101.5.61:8082",
+					changeOrigin: true,
+					secure: false,
+				},
+				// Proxy para cualquier otra API
+				"/api": {
+					target: envVars.VITE_APP_API_URL,
+					changeOrigin: true,
+					secure: false,
 				},
 			},
 		},

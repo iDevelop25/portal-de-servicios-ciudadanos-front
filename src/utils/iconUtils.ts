@@ -32,11 +32,6 @@ export function getIconForTramite(title: string): LucideIcon {
 	) {
 		return Home
 	} else if (
-		normalizedTitle.includes("impuesto") &&
-		normalizedTitle.includes("vehículo")
-	) {
-		return Car
-	} else if (
 		normalizedTitle.includes("certificado") ||
 		normalizedTitle.includes("certificación")
 	) {

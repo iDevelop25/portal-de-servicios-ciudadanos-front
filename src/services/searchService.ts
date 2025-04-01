@@ -1,5 +1,6 @@
+// Archivo: /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/services/searchService.ts
+
 import { SearchResult, ApiSearchResult } from "../types/search.types"
-import { SEARCH_API_URL } from "../config/env"
 import axios from "axios"
 
 /**
@@ -13,9 +14,9 @@ export const searchService = {
 	 */
 	search: async (query: string): Promise<SearchResult[]> => {
 		try {
-			// Llamar al endpoint real
+			// Usar la ruta del proxy en lugar de la URL completa
 			const response = await axios.get<ApiSearchResult[]>(
-				`${SEARCH_API_URL}?query=${encodeURIComponent(query)}`
+				`/api/master/search?query=${encodeURIComponent(query)}`
 			)
 
 			// Transformar los resultados al formato que espera nuestra aplicación

@@ -1,15 +1,7 @@
+// Archivo: /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/services/topService.ts
+
 import axios from "axios"
 import { TopItem } from "../types/top.types"
-import { env } from "../utils/env"
-
-/**
- * URL base del endpoint de Top Consultados
- * Se obtiene de las variables de entorno según el ambiente (development, staging, production)
- */
-const TOP_API_URL = env.get(
-	"TOP_API_URL",
-	"http://10.101.5.61:8082/api/master/top"
-)
 
 /**
  * Clase para servicios relacionados con los trámites y servicios más consultados
@@ -21,7 +13,8 @@ class TopService {
 	 */
 	async getTopItems(): Promise<TopItem[]> {
 		try {
-			const response = await axios.get<TopItem[]>(TOP_API_URL)
+			// Usar la ruta del proxy en lugar de la URL completa
+			const response = await axios.get<TopItem[]>("/api/master/top")
 
 			// Verificamos si la respuesta es válida
 			if (response.status === 200 && Array.isArray(response.data)) {
