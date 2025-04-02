@@ -37,6 +37,13 @@ export const TRAMITES_API_URL =
 	import.meta.env.VITE_APP_TRAMITES_API_URL ||
 	"http://10.101.5.61:8082/api/master/tramites"
 
+export const GROUP_API_URL =
+	import.meta.env.VITE_APP_GROUP_API_URL ||
+	"http://10.101.5.61:8082/api/master/group"
+
+export const API_HOST =
+	import.meta.env.VITE_APP_API_HOST || "http://10.101.5.61:8082"
+
 // Construir una URL completa para un endpoint específico
 export const buildApiUrl = (endpoint: string): string => {
 	return `${API_BASE_PATH}${endpoint}`
@@ -104,6 +111,16 @@ export const env = {
 	 * URL para la API de trámites y servicios
 	 */
 	TRAMITES_API_URL, // Añadido como propiedad del objeto env
+
+	/**
+	 * URL para la API de grupos
+	 */
+	GROUP_API_URL,
+
+	/**
+	 * Host base para las APIs
+	 */
+	API_HOST,
 
 	/**
 	 * Obtiene una variable de entorno específica

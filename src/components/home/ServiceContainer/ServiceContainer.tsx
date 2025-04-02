@@ -9,16 +9,15 @@ import {
 } from "lucide-react"
 
 // Importamos las imágenes locales
-import victimasImage from "../../../assets/images/rutas/victimas.png"
-import migrantesImage from "../../../assets/images/rutas/migrantes.png"
-import educacionImage from "../../../assets/images/rutas/educacion.png"
+// import victimasImage from "../../../assets/images/rutas/victimas.png"
+// import migrantesImage from "../../../assets/images/rutas/migrantes.png"
+// import educacionImage from "../../../assets/images/rutas/educacion.png"
 import avancesImage from "../../../assets/images/avances.png"
 import { useTopItems } from "../../../hooks/useTopItems"
-import { ServiceRoute } from "../../../types/service.types"
+// import { ServiceRoute } from "../../../types/service.types"
 
 // Lazy loading de componentes
 const CircleIcon = lazy(() => import("../../common/CircleIcon"))
-const ServiceCard = lazy(() => import("../../common/ServiceCard"))
 const TramiteCard = lazy(() => import("../../common/TramiteCard"))
 const CardSlider = lazy(() => import("../../common/CardSlider"))
 const SecretaryServices = lazy(() => import("../../common/SecretaryServices"))
@@ -36,6 +35,7 @@ const LoadingPlaceholder = ({ height = "200px", width = "100%" }) => (
 
 // Componente para animación al hacer scroll
 import { ReactNode } from "react"
+import ServiceGroupSlider from "../../common/ServiceGroupSlider"
 
 const FadeInSection = ({
 	children,
@@ -63,32 +63,32 @@ const FadeInSection = ({
  * Datos de ejemplo de rutas de servicio
  * En un futuro, estos datos vendrán de un backend
  */
-const serviceRoutesData: ServiceRoute[] = [
-	{
-		id: "victims",
-		title: "Víctimas",
-		description:
-			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
-		imageUrl: victimasImage,
-		link: "/servicios/victimas",
-	},
-	{
-		id: "migrants",
-		title: "Migrantes",
-		description:
-			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
-		imageUrl: migrantesImage,
-		link: "/servicios/migrantes",
-	},
-	{
-		id: "education",
-		title: "Educación",
-		description:
-			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
-		imageUrl: educacionImage,
-		link: "/servicios/educacion",
-	},
-]
+// const serviceRoutesData: ServiceRoute[] = [
+// 	{
+// 		id: "victims",
+// 		title: "Víctimas",
+// 		description:
+// 			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
+// 		imageUrl: victimasImage,
+// 		link: "/servicios/victimas",
+// 	},
+// 	{
+// 		id: "migrants",
+// 		title: "Migrantes",
+// 		description:
+// 			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
+// 		imageUrl: migrantesImage,
+// 		link: "/servicios/migrantes",
+// 	},
+// 	{
+// 		id: "education",
+// 		title: "Educación",
+// 		description:
+// 			"Conoce la hoja de ruta de Bogotá, que tiene como objetivo mejorar la calidad de vida de todas y todos los ciudadanos...",
+// 		imageUrl: educacionImage,
+// 		link: "/servicios/educacion",
+// 	},
+// ]
 
 /**
  * Componente ServiceContainer
@@ -209,19 +209,15 @@ function ServiceContainer() {
 						</div>
 					</FadeInSection>
 
-					{/* Grid de tarjetas de servicio */}
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						{serviceRoutesData.map((service, index) => (
-							<FadeInSection key={service.id} delay={0.2 + index * 0.1}>
-								<Suspense fallback={<LoadingPlaceholder height="300px" />}>
-									<ServiceCard service={service} />
-								</Suspense>
-							</FadeInSection>
-						))}
-					</div>
+					{/* Slider de Rutas de Servicio */}
+					<FadeInSection delay={0.3}>
+						<Suspense fallback={<LoadingPlaceholder height="350px" />}>
+							<ServiceGroupSlider />
+						</Suspense>
+					</FadeInSection>
 
 					{/* Slider de trámites más consultados */}
-					<FadeInSection delay={0.3} className="mt-16">
+					<FadeInSection delay={0.4} className="mt-16">
 						<Suspense fallback={<LoadingPlaceholder height="300px" />}>
 							<CardSlider
 								title="Más consultados"

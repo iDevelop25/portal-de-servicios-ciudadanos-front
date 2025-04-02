@@ -64,4 +64,8 @@ export const publicRoutes: RouteObject[] = [
 		path: ROUTES.NOT_FOUND.path,
 		element: <NotFound />,
 	},
+	{
+		path: "/servicios/:id",
+		element: <ServiceRoute />,
+	},
 ]

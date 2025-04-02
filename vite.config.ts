@@ -140,6 +140,29 @@ export default defineConfig(({ mode }) => {
 						})
 					},
 				},
+				// Proxy para API de grupos
+				"/api/master/group": {
+					target: "http://10.101.5.61:8082",
+					changeOrigin: true,
+					secure: false,
+					configure: (proxy) => {
+						proxy.on("error", (err, _, res) => {
+							console.warn("Group API proxy error:", err)
+							if (res.writeHead && !res.headersSent) {
+								res.writeHead(500, {
+									"Content-Type": "application/json",
+								})
+								res.end(
+									JSON.stringify({
+										success: false,
+										message:
+											"Error de conexión con el servicio de grupos. Por favor intente más tarde.",
+									})
+								)
+							}
+						})
+					},
+				},
 			},
 		},
 
