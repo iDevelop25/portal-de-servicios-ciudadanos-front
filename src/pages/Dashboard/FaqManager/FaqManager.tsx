@@ -1,5 +1,4 @@
-// frontend/src/pages/Dashboard/FaqManager/FaqManager.tsx
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
 	Plus,
 	Search,
@@ -13,6 +12,7 @@ import {
 	Save,
 	Eye,
 	Loader,
+	Trash,
 } from "lucide-react"
 import DashboardLayout from "../../../components/layout/DashboardLayout"
 import useFaqs from "../../../hooks/useFaqs"
@@ -35,8 +35,17 @@ const initialFormState: FormState = {
 
 function FaqManager() {
 	// Usamos el hook personalizado para FAQs
-	const { faqs, loading, error, getAllFaqs, createFaq, updateFaq, deleteFaq } =
-		useFaqs()
+	const {
+		faqs,
+		loading,
+		error,
+		getAllFaqs,
+		createFaq,
+		updateFaq,
+		deleteFaq,
+		permanentDeleteFaq,
+		toggleActiveStatus,
+	} = useFaqs()
 
 	// Estados para el formulario
 	const [formMode, setFormMode] = useState<"create" | "edit">("create")
@@ -45,17 +54,35 @@ function FaqManager() {
 	const [editingId, setEditingId] = useState<number | null>(null)
 
 	// Estado para el diálogo de confirmación de eliminación
-	const [confirmDelete, setConfirmDelete] = useState<number | null>(null)
+	const [confirmDelete, setConfirmDelete] = useState<{
+		id: number
+		isPermanent: boolean
+	} | null>(null)
 
 	// Estados para búsqueda y filtrado
 	const [searchQuery, setSearchQuery] = useState("")
 	const [filterActive, setFilterActive] = useState(true)
+
+	// Estado local para manejar carga
+	const [isLoading, setIsLoading] = useState(false)
 
 	// Estado para alertas
 	const [alert, setAlert] = useState<{
 		type: "success" | "error" | "info"
 		message: string
 	} | null>(null)
+
+	// Cargar todas las FAQs al cambiar el filtro sin causar bucles infinitos
+	useEffect(() => {
+		const loadFaqs = async () => {
+			setIsLoading(true)
+			await getAllFaqs(!filterActive)
+			setIsLoading(false)
+		}
+
+		loadFaqs()
+		// No incluir getAllFaqs en las dependencias para evitar bucles
+	}, [filterActive])
 
 	// Función para mostrar alertas
 	const showAlert = (type: "success" | "error" | "info", message: string) => {
@@ -82,14 +109,17 @@ function FaqManager() {
 
 		// Actualizar en el servidor
 		try {
+			setIsLoading(true)
 			await updateFaq(id, { order: newFaqs[currentIndex].order })
 			await updateFaq(newFaqs[targetIndex].id, { order: currentOrder })
 
 			// Recargar datos
-			await getAllFaqs()
+			await getAllFaqs(!filterActive)
 			showAlert("success", "Orden actualizada correctamente")
 		} catch {
 			showAlert("error", "Error al actualizar el orden")
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -132,6 +162,7 @@ function FaqManager() {
 		}
 
 		try {
+			setIsLoading(true)
 			if (formMode === "create") {
 				// Crear nueva FAQ
 				const newFaqData: CreateFaqData = {
@@ -163,28 +194,73 @@ function FaqManager() {
 			}
 		} catch {
 			showAlert("error", "Error al guardar la pregunta frecuente")
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
 	// Función para manejar la eliminación de una FAQ
-	const handleDelete = async (id: number) => {
+	const handleDelete = async () => {
+		if (!confirmDelete) return
+
 		try {
-			const success = await deleteFaq(id)
-			if (success) {
-				showAlert("success", "Pregunta frecuente eliminada correctamente")
-				setConfirmDelete(null)
+			setIsLoading(true)
+			let success
+
+			if (confirmDelete.isPermanent) {
+				// Borrado permanente
+				success = await permanentDeleteFaq(confirmDelete.id)
+				if (success) {
+					showAlert("success", "Pregunta frecuente eliminada permanentemente")
+				}
+			} else {
+				// Soft delete
+				success = await deleteFaq(confirmDelete.id)
+				if (success) {
+					showAlert("success", "Pregunta frecuente desactivada correctamente")
+				}
 			}
+
+			// Cerrar el diálogo de confirmación
+			setConfirmDelete(null)
 		} catch {
 			showAlert("error", "Error al eliminar la pregunta frecuente")
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
-	// Función para filtrar y buscar FAQs
+	// Función para cambiar el estado activo de una FAQ
+	const handleToggleActive = async (id: number, currentStatus: boolean) => {
+		try {
+			setIsLoading(true)
+			const success = await toggleActiveStatus(id, currentStatus)
+
+			if (success) {
+				showAlert(
+					"success",
+					`Pregunta frecuente ${
+						!currentStatus ? "activada" : "desactivada"
+					} correctamente`
+				)
+			}
+		} catch {
+			showAlert("error", "Error al cambiar el estado de la pregunta frecuente")
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	// Recargar datos con control local del estado de carga
+	const handleReloadData = async () => {
+		setIsLoading(true)
+		await getAllFaqs(!filterActive)
+		setIsLoading(false)
+	}
+
+	// Filtrar y buscar FAQs
 	const filteredFaqs = faqs
 		.filter((faq) => {
-			// Filtrar por estado activo
-			if (filterActive && !faq.isActive) return false
-
 			// Filtrar por texto de búsqueda
 			if (searchQuery) {
 				const query = searchQuery.toLowerCase()
@@ -193,26 +269,9 @@ function FaqManager() {
 					faq.answer.toLowerCase().includes(query)
 				)
 			}
-
 			return true
 		})
-		.sort((a, b) => a.order - b.order)
-
-	// Función para cambiar el estado activo de una FAQ
-	const handleToggleActive = async (id: number, currentStatus: boolean) => {
-		try {
-			await updateFaq(id, { isActive: !currentStatus })
-			await getAllFaqs()
-			showAlert(
-				"success",
-				`Pregunta frecuente ${
-					!currentStatus ? "activada" : "desactivada"
-				} correctamente`
-			)
-		} catch {
-			showAlert("error", "Error al cambiar el estado de la pregunta frecuente")
-		}
-	}
+		.sort((a, b) => (a.order || 0) - (b.order || 0))
 
 	return (
 		<DashboardLayout title="Gestión de Preguntas Frecuentes">
@@ -250,6 +309,7 @@ function FaqManager() {
 					<button
 						onClick={handleCreateNew}
 						className="flex items-center gap-2 bg-govco-primary text-white py-2 px-4 rounded-lg hover:bg-govco-secondary transition-colors cursor-pointer"
+						disabled={isLoading}
 					>
 						<Plus size={18} />
 						<span>Crear nueva pregunta</span>
@@ -275,6 +335,7 @@ function FaqManager() {
 								checked={filterActive}
 								onChange={() => setFilterActive(!filterActive)}
 								className="sr-only peer"
+								disabled={isLoading}
 							/>
 							<div className="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-govco-primary peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-govco-primary"></div>
 							<span className="ml-3 text-sm font-medium text-gray-900">
@@ -367,15 +428,26 @@ function FaqManager() {
 								type="button"
 								onClick={resetForm}
 								className="py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+								disabled={isLoading}
 							>
 								Cancelar
 							</button>
 							<button
 								type="submit"
 								className="flex items-center gap-2 py-2 px-4 bg-govco-primary text-white rounded-lg hover:bg-govco-secondary transition-colors cursor-pointer"
+								disabled={isLoading}
 							>
-								<Save size={18} />
-								Guardar
+								{isLoading ? (
+									<>
+										<Loader size={18} className="animate-spin" />
+										Guardando...
+									</>
+								) : (
+									<>
+										<Save size={18} />
+										Guardar
+									</>
+								)}
 							</button>
 						</div>
 					</form>
@@ -388,7 +460,7 @@ function FaqManager() {
 					<h3 className="text-lg font-medium">Lista de preguntas frecuentes</h3>
 				</div>
 
-				{loading ? (
+				{isLoading || loading ? (
 					<div className="flex justify-center my-12">
 						<div className="flex flex-col items-center">
 							<Loader
@@ -411,7 +483,7 @@ function FaqManager() {
 							</div>
 							<div className="ml-auto pl-3">
 								<button
-									onClick={() => getAllFaqs()}
+									onClick={handleReloadData}
 									className="inline-flex rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none cursor-pointer"
 								>
 									<X size={16} />
@@ -475,7 +547,7 @@ function FaqManager() {
 										<div className="flex flex-col">
 											<button
 												onClick={() => handleReorder(faq.id, "up")}
-												disabled={faq.order <= 1}
+												disabled={faq.order <= 1 || isLoading}
 												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 												title="Mover arriba"
 											>
@@ -483,7 +555,7 @@ function FaqManager() {
 											</button>
 											<button
 												onClick={() => handleReorder(faq.id, "down")}
-												disabled={faq.order >= faqs.length}
+												disabled={faq.order >= faqs.length || isLoading}
 												className="p-1 text-gray-500 hover:text-govco-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 												title="Mover abajo"
 											>
@@ -495,14 +567,16 @@ function FaqManager() {
 										<div className="flex gap-1">
 											<button
 												onClick={() => handleEdit(faq)}
-												className="p-1.5 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 rounded-md cursor-pointer"
+												disabled={isLoading}
+												className="p-1.5 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 rounded-md cursor-pointer disabled:opacity-50"
 												title="Editar"
 											>
 												<Edit size={16} />
 											</button>
 											<button
 												onClick={() => handleToggleActive(faq.id, faq.isActive)}
-												className="p-1.5 rounded-md hover:bg-green-50 cursor-pointer"
+												disabled={isLoading}
+												className="p-1.5 rounded-md hover:bg-green-50 cursor-pointer disabled:opacity-50"
 												title={faq.isActive ? "Desactivar" : "Activar"}
 											>
 												{faq.isActive ? (
@@ -517,13 +591,29 @@ function FaqManager() {
 													/>
 												)}
 											</button>
-											<button
-												onClick={() => setConfirmDelete(faq.id)}
-												className="p-1.5 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-md cursor-pointer"
-												title="Eliminar"
-											>
-												<Trash2 size={16} />
-											</button>
+											{faq.isActive ? (
+												<button
+													onClick={() =>
+														setConfirmDelete({ id: faq.id, isPermanent: false })
+													}
+													disabled={isLoading}
+													className="p-1.5 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-md cursor-pointer disabled:opacity-50"
+													title="Desactivar"
+												>
+													<Trash2 size={16} />
+												</button>
+											) : (
+												<button
+													onClick={() =>
+														setConfirmDelete({ id: faq.id, isPermanent: true })
+													}
+													disabled={isLoading}
+													className="p-1.5 text-red-900 hover:text-red-700 hover:bg-red-50 rounded-md cursor-pointer disabled:opacity-50"
+													title="Eliminar permanentemente"
+												>
+													<Trash size={16} />
+												</button>
+											)}
 										</div>
 									</div>
 								</div>
@@ -538,26 +628,44 @@ function FaqManager() {
 				<div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-30 flex items-center justify-center p-4 cursor-pointer">
 					<div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
 						<h3 className="text-lg font-bold text-govco-gray-900 mb-4">
-							Confirmar eliminación
+							{confirmDelete.isPermanent
+								? "Confirmar eliminación permanente"
+								: "Confirmar desactivación"}
 						</h3>
 						<p className="text-govco-gray-600 mb-6">
-							¿Está seguro de que desea eliminar esta pregunta frecuente? Esta
-							acción no se puede deshacer.
+							{confirmDelete.isPermanent
+								? "¿Está seguro de que desea eliminar permanentemente esta pregunta frecuente? Esta acción no se puede deshacer."
+								: "¿Está seguro de que desea desactivar esta pregunta frecuente? Podrá activarla nuevamente más adelante."}
 						</p>
 						<div className="flex justify-end space-x-3">
 							<button
 								onClick={() => setConfirmDelete(null)}
 								className="px-4 py-2 border border-gray-300 rounded-lg text-govco-gray-700 hover:bg-gray-50 cursor-pointer"
+								disabled={isLoading}
 							>
 								Cancelar
 							</button>
 							<button
-								onClick={() => {
-									if (confirmDelete) handleDelete(confirmDelete)
-								}}
-								className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
+								onClick={handleDelete}
+								disabled={isLoading}
+								className={`px-4 py-2 text-white rounded-lg cursor-pointer ${
+									confirmDelete.isPermanent
+										? "bg-red-700 hover:bg-red-800"
+										: "bg-red-600 hover:bg-red-700"
+								} ${isLoading ? "opacity-70" : ""}`}
 							>
-								Eliminar
+								{isLoading ? (
+									<span className="flex items-center">
+										<Loader size={16} className="animate-spin mr-2" />
+										{confirmDelete.isPermanent
+											? "Eliminando..."
+											: "Desactivando..."}
+									</span>
+								) : confirmDelete.isPermanent ? (
+									"Eliminar permanentemente"
+								) : (
+									"Desactivar"
+								)}
 							</button>
 						</div>
 					</div>
