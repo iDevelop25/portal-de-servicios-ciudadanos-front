@@ -1,6 +1,11 @@
+import axios from "axios"
 import { NewsItem } from "../types/news.types"
+import { API_URL, API_BASE_PATH } from "../config/env"
 
-// Datos de ejemplo para desarrollo
+// URL base para las operaciones con noticias
+const NEWS_API_URL = `${API_URL}${API_BASE_PATH}/news`
+
+// Respuesta para datos mockeados (para fallback)
 const mockNewsItems: NewsItem[] = [
 	{
 		id: "news-1",
@@ -33,7 +38,7 @@ const mockNewsItems: NewsItem[] = [
 
 /**
  * Servicio para gestionar las novedades
- * Actualmente utiliza datos de ejemplo, pero está preparado para conectarse a un backend
+ * Consume la API real del backend, con fallback a datos de ejemplo
  */
 export const newsService = {
 	/**
@@ -42,13 +47,26 @@ export const newsService = {
 	 * @returns Lista de novedades
 	 */
 	async getNews(limit?: number): Promise<NewsItem[]> {
-		// Simulamos una llamada a API con un delay
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				const result = limit ? mockNewsItems.slice(0, limit) : mockNewsItems
-				resolve(result)
-			}, 500)
-		})
+		try {
+			// Intentar obtener datos de la API real
+			const response = await axios.get(NEWS_API_URL)
+
+			if (response.status === 200 && response.data.success) {
+				const newsData = response.data.data || []
+				// Si se especifica un límite, devolvemos solo ese número de elementos
+				return limit ? newsData.slice(0, limit) : newsData
+			}
+
+			throw new Error("Respuesta inválida del servidor")
+		} catch (error) {
+			console.error(
+				"Error al obtener noticias, usando datos de ejemplo:",
+				error
+			)
+			// Fallback a datos mockup
+			const result = limit ? mockNewsItems.slice(0, limit) : mockNewsItems
+			return result
+		}
 	},
 
 	/**
@@ -57,12 +75,86 @@ export const newsService = {
 	 * @returns Novedad encontrada o null
 	 */
 	async getNewsById(id: string): Promise<NewsItem | null> {
-		// Simulamos una llamada a API con un delay
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				const item = mockNewsItems.find((news) => news.id === id) || null
-				resolve(item)
-			}, 300)
-		})
+		try {
+			// Intentar obtener la noticia de la API real
+			const response = await axios.get(`${NEWS_API_URL}/${id}`)
+
+			if (response.status === 200 && response.data.success) {
+				return response.data.data || null
+			}
+
+			throw new Error("Respuesta inválida del servidor")
+		} catch (error) {
+			console.error(
+				`Error al obtener noticia con ID ${id}, usando datos de ejemplo:`,
+				error
+			)
+			// Fallback a datos mockup
+			return mockNewsItems.find((news) => news.id === id) || null
+		}
+	},
+
+	/**
+	 * Crea una nueva noticia
+	 * @param newsData Datos de la noticia a crear
+	 * @returns La noticia creada
+	 */
+	async createNews(newsData: Omit<NewsItem, "id">): Promise<NewsItem | null> {
+		try {
+			const response = await axios.post(NEWS_API_URL, newsData)
+
+			if (response.status === 201 && response.data.success) {
+				return response.data.data
+			}
+
+			throw new Error(response.data.message || "Error al crear la noticia")
+		} catch (error) {
+			console.error("Error al crear noticia:", error)
+			return null
+		}
+	},
+
+	/**
+	 * Actualiza una noticia existente
+	 * @param id ID de la noticia a actualizar
+	 * @param newsData Datos a actualizar
+	 * @returns La noticia actualizada
+	 */
+	async updateNews(
+		id: string,
+		newsData: Partial<NewsItem>
+	): Promise<NewsItem | null> {
+		try {
+			const response = await axios.put(`${NEWS_API_URL}/${id}`, newsData)
+
+			if (response.status === 200 && response.data.success) {
+				return response.data.data
+			}
+
+			throw new Error(response.data.message || "Error al actualizar la noticia")
+		} catch (error) {
+			console.error(`Error al actualizar noticia con ID ${id}:`, error)
+			return null
+		}
+	},
+
+	/**
+	 * Elimina una noticia (soft delete)
+	 * @param id ID de la noticia a eliminar
+	 * @returns true si se eliminó correctamente
+	 */
+	async deleteNews(id: string): Promise<boolean> {
+		try {
+			const response = await axios.delete(`${NEWS_API_URL}/${id}`)
+
+			if (response.status === 200 && response.data.success) {
+				return true
+			}
+
+			throw new Error(response.data.message || "Error al eliminar la noticia")
+		} catch (error) {
+			console.error(`Error al eliminar noticia con ID ${id}:`, error)
+			return false
+		}
 	},
 }

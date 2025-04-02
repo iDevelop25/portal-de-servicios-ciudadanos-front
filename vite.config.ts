@@ -76,7 +76,7 @@ export default defineConfig(({ mode }) => {
 					rewrite: (path) => path.replace(/^\/reservation-proxy/, ""),
 					configure: (proxy) => {
 						// Ignorar errores de SSL
-						proxy.on("error", (err, req, res) => {
+						proxy.on("error", (err, _, res) => {
 							console.warn("Proxy error:", err)
 							// Proporcionar una respuesta personalizada en caso de error de proxy
 							if (res.writeHead && !res.headersSent) {
@@ -100,7 +100,7 @@ export default defineConfig(({ mode }) => {
 					changeOrigin: true,
 					secure: false,
 					configure: (proxy) => {
-						proxy.on("error", (err, req, res) => {
+						proxy.on("error", (err, _, res) => {
 							console.warn("API Master proxy error:", err)
 							if (res.writeHead && !res.headersSent) {
 								res.writeHead(500, {
@@ -123,7 +123,7 @@ export default defineConfig(({ mode }) => {
 					changeOrigin: true,
 					secure: false,
 					configure: (proxy) => {
-						proxy.on("error", (err, req, res) => {
+						proxy.on("error", (err, _, res) => {
 							console.warn("API proxy error:", err)
 							if (res.writeHead && !res.headersSent) {
 								res.writeHead(500, {

@@ -9,6 +9,7 @@ import {
 	Search,
 	X,
 	Loader,
+	AlertTriangle,
 } from "lucide-react"
 import DashboardLayout from "../../../components/layout/DashboardLayout"
 import { newsService } from "../../../services/newsService"
@@ -19,6 +20,7 @@ import NewsForm from "./NewsForm"
  * Componente NewsManager
  *
  * Gestiona la creación, edición y eliminación de noticias desde el panel de administración
+ * Ahora conectado al backend para operaciones CRUD reales
  */
 function NewsManager() {
 	// Estados
@@ -46,7 +48,7 @@ function NewsManager() {
 		} catch (error: unknown) {
 			const errorMessage =
 				error instanceof Error ? error.message : "Error desconocido"
-			setError(`Error de conexión: ${errorMessage}`)
+			setError(`Error al cargar las noticias: ${errorMessage}`)
 		} finally {
 			setIsLoading(false)
 		}
@@ -56,7 +58,8 @@ function NewsManager() {
 	const filteredNews = news.filter(
 		(item) =>
 			item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item.content &&
+				item.content.toLowerCase().includes(searchTerm.toLowerCase())) ||
 			(item.entityName &&
 				item.entityName.toLowerCase().includes(searchTerm.toLowerCase()))
 	)
@@ -83,30 +86,40 @@ function NewsManager() {
 	const handleSave = async (newsData: NewsItem) => {
 		setIsLoading(true)
 		try {
-			// Como el servicio de ejemplo no tiene métodos de crear/actualizar,
-			// simulamos una actualización exitosa
+			let savedNews: NewsItem | null
+
 			if (newsData.id) {
-				// En producción, aquí llamaríamos a la API para actualizar
-				// Actualizar la lista de noticias localmente
-				setNews((prevNews) =>
-					prevNews.map((item) => (item.id === newsData.id ? newsData : item))
-				)
-			} else {
-				// En producción, aquí llamaríamos a la API para crear
-				// Asignar un ID simulado
-				const newNewsItem: NewsItem = {
-					...newsData,
-					id: `news-${Date.now()}`, // ID temporal simulado
+				// Actualizar noticia existente
+				savedNews = await newsService.updateNews(newsData.id, newsData)
+				if (savedNews) {
+					// Actualizar la lista de noticias localmente
+					setNews((prevNews) =>
+						prevNews.map((item) =>
+							item.id === savedNews?.id ? (savedNews as NewsItem) : item
+						)
+					)
+					setShowForm(false)
+					setError(null)
+				} else {
+					throw new Error("No se pudo actualizar la noticia")
 				}
-				// Añadir la nueva noticia a la lista
-				setNews((prevNews) => [...prevNews, newNewsItem])
+			} else {
+				// Crear nueva noticia
+				const newsDataWithoutId = { ...newsData }
+				savedNews = await newsService.createNews(newsDataWithoutId)
+				if (savedNews) {
+					// Añadir la nueva noticia a la lista
+					setNews((prevNews) => [...prevNews, savedNews as NewsItem])
+					setShowForm(false)
+					setError(null)
+				} else {
+					throw new Error("No se pudo crear la noticia")
+				}
 			}
-			setShowForm(false)
-			setError(null)
 		} catch (error: unknown) {
 			const errorMessage =
 				error instanceof Error ? error.message : "Error desconocido"
-			setError(`Error: ${errorMessage}`)
+			setError(`Error al guardar la noticia: ${errorMessage}`)
 		} finally {
 			setIsLoading(false)
 		}
@@ -130,16 +143,23 @@ function NewsManager() {
 
 		setIsLoading(true)
 		try {
-			// En producción, aquí llamaríamos a la API para eliminar
-			// Eliminar de la lista local
-			setNews((prevNews) => prevNews.filter((item) => item.id !== newsToDelete))
-			setIsDeleting(false)
-			setNewsToDelete(null)
-			setError(null)
+			const success = await newsService.deleteNews(newsToDelete)
+
+			if (success) {
+				// Eliminar de la lista local
+				setNews((prevNews) =>
+					prevNews.filter((item) => item.id !== newsToDelete)
+				)
+				setIsDeleting(false)
+				setNewsToDelete(null)
+				setError(null)
+			} else {
+				throw new Error("No se pudo eliminar la noticia")
+			}
 		} catch (error: unknown) {
 			const errorMessage =
 				error instanceof Error ? error.message : "Error desconocido"
-			setError(`Error: ${errorMessage}`)
+			setError(`Error al eliminar la noticia: ${errorMessage}`)
 		} finally {
 			setIsLoading(false)
 		}
@@ -191,18 +211,7 @@ function NewsManager() {
 					<div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<svg
-									className="h-5 w-5 text-red-400"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<AlertTriangle className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3">
 								<p className="text-sm text-red-700">{error}</p>
@@ -277,13 +286,11 @@ function NewsManager() {
 							<tbody className="bg-white divide-y divide-gray-200">
 								{filteredNews.map((newsItem) => {
 									// Formatear la fecha
-									const dateFormatted = format(
-										parseISO(newsItem.date),
-										"dd/MM/yyyy",
-										{
-											locale: es,
-										}
-									)
+									const dateFormatted = newsItem.date
+										? format(parseISO(newsItem.date), "dd/MM/yyyy", {
+												locale: es,
+										  })
+										: "Sin fecha"
 
 									return (
 										<tr key={newsItem.id} className="hover:bg-gray-50">
