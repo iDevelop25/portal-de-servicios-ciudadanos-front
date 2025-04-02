@@ -212,7 +212,7 @@ function ServiceContainer() {
 					{/* Slider de Rutas de Servicio */}
 					<FadeInSection delay={0.3}>
 						<Suspense fallback={<LoadingPlaceholder height="350px" />}>
-							<ServiceGroupSlider />
+							<ServiceGroupSlider title="" /> {/* Pasamos un título vacío */}
 						</Suspense>
 					</FadeInSection>
 
