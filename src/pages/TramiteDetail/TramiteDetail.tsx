@@ -63,7 +63,11 @@ function TramiteDetail() {
 								{tramiteDetail.nombreDeLaOferta}
 							</h1>
 							{tramiteDetail.proposito && (
-								<ReadMore text={tramiteDetail.proposito} maxLength={150} />
+								<ReadMore
+									text={tramiteDetail.proposito}
+									maxLength={150}
+									title={`Propósito: ${tramiteDetail.nombreDeLaOferta}`}
+								/>
 							)}
 						</div>
 
@@ -108,6 +112,7 @@ function TramiteDetail() {
 										<ReadMore
 											text={tramiteDetail.gtengaEnCuenta}
 											maxLength={150}
+											title="Información importante a tener en cuenta"
 										/>
 									</div>
 								)}
@@ -121,7 +126,12 @@ function TramiteDetail() {
 									<h3 className="text-red-600 font-semibold mb-3">
 										¿Qué es y para qué sirve?
 									</h3>
-									<ReadMore text={tramiteDetail.gdescripcion} maxLength={300} />
+									<ReadMore
+										text={tramiteDetail.gdescripcion}
+										maxLength={300}
+										title="Descripción del trámite"
+										modalSize="lg"
+									/>
 
 									<h3 className="text-red-600 font-semibold mt-6 mb-3">
 										Requisitos para Persona Natural
@@ -132,6 +142,7 @@ function TramiteDetail() {
 											"No hay requisitos específicos para persona natural"
 										}
 										maxLength={200}
+										title="Requisitos para Persona Natural"
 									/>
 									{tramiteDetail.grequisitoPj && (
 										<>
@@ -141,6 +152,7 @@ function TramiteDetail() {
 											<ReadMore
 												text={tramiteDetail.grequisitoPj}
 												maxLength={200}
+												title="Requisitos para Persona Jurídica"
 											/>
 										</>
 									)}
@@ -154,6 +166,7 @@ function TramiteDetail() {
 										<ReadMore
 											text={tramiteDetail.gdescripcionDonde}
 											maxLength={200}
+											title="Lugares donde se puede realizar el trámite"
 										/>
 									) : (
 										<p className="text-sm mb-6">
@@ -169,6 +182,7 @@ function TramiteDetail() {
 										<ReadMore
 											text={tramiteDetail.gdescripcionPago}
 											maxLength={200}
+											title="Información sobre costos y pagos"
 										/>
 									) : (
 										<p className="text-sm">

@@ -1,51 +1,66 @@
-// src/components/common/ReadMore.tsx
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { ChevronRight } from "lucide-react"
+import Modal from "./Modal/Modal"
 
 interface ReadMoreProps {
 	text: string
 	maxLength?: number // Cantidad máxima de caracteres a mostrar inicialmente (por defecto 200)
+	title?: string // Título opcional para el modal
+	modalSize?: "sm" | "md" | "lg" | "xl" | "full" // Tamaño del modal
 }
 
 /**
- * Componente ReadMore
- * Muestra un texto truncado si es muy largo, con un botón "Mostrar más" que al pulsarlo expande o contrae el contenido con animación.
+ * Componente ReadMore mejorado
+ * Muestra un texto truncado si es muy largo, con un botón "Mostrar más" que al pulsarlo
+ * abre un modal con el texto completo en lugar de expandir el contenido in-place.
  */
-export default function ReadMore({ text, maxLength = 200 }: ReadMoreProps) {
-	const [isExpanded, setIsExpanded] = useState(false)
-	const toggleExpand = () => setIsExpanded((prev) => !prev)
+export default function ReadMore({
+	text,
+	maxLength = 200,
+	title = "Información completa",
+	modalSize = "full",
+}: ReadMoreProps) {
+	const [isModalOpen, setIsModalOpen] = useState(false)
 
-	// Si el texto es corto, se muestra completo sin botón.
+	// Si el texto es corto, se muestra completo sin botón
 	if (text.length <= maxLength) {
-		return <p className="text-sm text-gray-700">{text}</p>
+		return <p className="text-gray-700 leading-relaxed">{text}</p>
 	}
 
-	// Texto truncado con puntos suspensivos.
+	// Texto truncado con puntos suspensivos
 	const truncatedText = text.slice(0, maxLength) + "..."
 
+	// Abrir el modal
+	const openModal = () => setIsModalOpen(true)
+
+	// Cerrar el modal
+	const closeModal = () => setIsModalOpen(false)
+
 	return (
-		<div className="overflow-hidden">
-			{/* AnimatePresence y motion.div con la propiedad layout hacen que los cambios de altura se animen suavemente */}
-			<AnimatePresence initial={false}>
-				<motion.div
-					key={isExpanded ? "expanded" : "collapsed"}
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					exit={{ opacity: 0 }}
-					transition={{ duration: 0.3 }}
-					layout
+		<div className="w-full">
+			<p className="text-gray-700 leading-relaxed">
+				{truncatedText}
+				<button
+					onClick={openModal}
+					className="ml-2 inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors focus:outline-none focus:underline"
 				>
-					<p className="text-sm text-gray-700">
-						{isExpanded ? text : truncatedText}
-					</p>
-				</motion.div>
-			</AnimatePresence>
-			<button
-				onClick={toggleExpand}
-				className="text-blue-500 hover:underline text-xs mt-1 focus:outline-none"
+					Mostrar más
+					<ChevronRight size={16} className="ml-1" />
+				</button>
+			</p>
+
+			<Modal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				title={title}
+				size={modalSize}
 			>
-				{isExpanded ? "Mostrar menos" : "Mostrar más"}
-			</button>
+				<div className="prose prose-lg max-w-none">
+					<p className="text-gray-700 leading-relaxed whitespace-pre-line">
+						{text}
+					</p>
+				</div>
+			</Modal>
 		</div>
 	)
 }
