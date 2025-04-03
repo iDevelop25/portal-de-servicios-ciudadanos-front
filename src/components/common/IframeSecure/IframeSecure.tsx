@@ -38,7 +38,7 @@ function IframeSecure({
 		const timer = setTimeout(() => {
 			if (src.startsWith("http")) {
 				// Si la URL es la problemática, usamos el proxy para evitar problemas de SSL
-				if (src === "https://10.101.5.111:4433") {
+				if (src === "http://130.213.189.134:8082/") {
 					setIframeSrc("/reservation-proxy")
 				} else {
 					setIframeSrc(src)

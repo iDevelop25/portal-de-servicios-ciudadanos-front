@@ -71,7 +71,7 @@ export default defineConfig(({ mode }) => {
 				// Configuración del proxy para sistema de reservas
 				"/reservation-proxy": {
 					target:
-						envVars.VITE_APP_RESERVATION_URL || "https://10.101.5.111:4433",
+						envVars.VITE_APP_RESERVATION_URL || "http://130.213.189.134:8082/",
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/reservation-proxy/, ""),
 					configure: (proxy) => {
