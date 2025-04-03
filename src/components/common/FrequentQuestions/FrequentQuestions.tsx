@@ -1,4 +1,4 @@
-import React from "react"
+// src/components/common/FrequentQuestions/FrequentQuestions.tsx
 import { motion, AnimatePresence } from "framer-motion"
 import useFaqs from "../../../hooks/useFaqs"
 
@@ -84,7 +84,10 @@ function FrequentQuestions({
 						{faqs.map((faq) => (
 							<div
 								key={faq.id}
-								className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+								// Se elimina el borde por defecto (usando border-transparent) y se agrega un outline azul cuando está expandida.
+								className={`rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border border-transparent ${
+									faq.isOpen ? "outline-1 outline-blue-500" : ""
+								}`}
 							>
 								{/* Pregunta (cabecera del acordeón) */}
 								<button
@@ -118,10 +121,10 @@ function FrequentQuestions({
 									{faq.isOpen && (
 										<motion.div
 											key={`answer-${faq.id}`}
+											variants={accordionVariants}
 											initial="hidden"
 											animate="visible"
 											exit="hidden"
-											variants={accordionVariants}
 											className="overflow-hidden"
 										>
 											<div className="px-6 py-4 bg-white">

@@ -32,6 +32,18 @@ export const TOP_API_URL =
 	import.meta.env.VITE_APP_TOP_API_URL ||
 	"http://10.101.5.61:8082/api/master/top"
 
+// URL para la API de trámites y servicios
+export const TRAMITES_API_URL =
+	import.meta.env.VITE_APP_TRAMITES_API_URL ||
+	"http://10.101.5.61:8082/api/master/tramites"
+
+export const GROUP_API_URL =
+	import.meta.env.VITE_APP_GROUP_API_URL ||
+	"http://10.101.5.61:8082/api/master/group"
+
+export const API_HOST =
+	import.meta.env.VITE_APP_API_HOST || "http://10.101.5.61:8082"
+
 // Construir una URL completa para un endpoint específico
 export const buildApiUrl = (endpoint: string): string => {
 	return `${API_BASE_PATH}${endpoint}`
@@ -77,7 +89,7 @@ export const env = {
 	 */
 	RESERVATION_URL:
 		(import.meta.env.VITE_APP_RESERVATION_URL as string) ||
-		"https://10.101.5.111:4433",
+		"http://130.213.189.134:8082/",
 
 	/**
 	 * Indica si se debe mostrar la guía para el certificado SSL
@@ -94,6 +106,21 @@ export const env = {
 	 * URL para la API de trámites más consultados
 	 */
 	TOP_API_URL,
+
+	/**
+	 * URL para la API de trámites y servicios
+	 */
+	TRAMITES_API_URL, // Añadido como propiedad del objeto env
+
+	/**
+	 * URL para la API de grupos
+	 */
+	GROUP_API_URL,
+
+	/**
+	 * Host base para las APIs
+	 */
+	API_HOST,
 
 	/**
 	 * Obtiene una variable de entorno específica

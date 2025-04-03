@@ -2,7 +2,12 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ChevronDown, Plus, Loader2 } from "lucide-react"
 import SecretaryServiceCard from "../SecretaryServiceCard"
+import SkeletonCard from "../SkeletonCard"
 import { SecretaryServiceItem } from "../../../types/service.types"
+import {
+	tramitesService,
+	TramiteTipologia,
+} from "../../../services/tramitesService"
 
 interface SecretaryServicesProps {
 	title?: string
@@ -37,6 +42,12 @@ function SecretaryServices({
 	const [itemsToShow, setItemsToShow] = useState(initialItemsToShow)
 	// Estado para simular carga
 	const [isLoading, setIsLoading] = useState(false)
+	// Estado para almacenar los datos de la API
+	const [allServices, setAllServices] = useState<SecretaryServiceItem[]>([])
+	// Estado para controlar la carga inicial
+	const [initialLoading, setInitialLoading] = useState(true)
+	// Estado para almacenar el error
+	const [error, setError] = useState<string | null>(null)
 
 	// Opciones de ordenamiento
 	const sortOptions = [
@@ -50,127 +61,77 @@ function SecretaryServices({
 		setIsDropdownOpen(false)
 	}
 
+	// Cargar datos iniciales desde la API
+	useEffect(() => {
+		const fetchServices = async () => {
+			setInitialLoading(true)
+			try {
+				// Determinar la tipología según el filtro activo
+				let tipologia: TramiteTipologia = ""
+				if (activeFilter === "tramites") {
+					tipologia = "tramite_unico"
+				} else if (activeFilter === "servicios") {
+					tipologia = "servicio"
+				}
+
+				// Obtener los datos de la API
+				const response = await tramitesService.getTramites(tipologia)
+
+				// Mapear los datos al formato requerido por la interfaz
+				const mappedServices: SecretaryServiceItem[] = response.content.map(
+					(item) => ({
+						id: item.uniqueId.toString(),
+						title: item.nombreDeLaOferta,
+						type: mapTipologiaToType(item.tipologia),
+						description: item.gdescripcion || "Sin descripción disponible",
+						link: getItemLink(item.tipologia, item.uniqueId),
+					})
+				)
+
+				setAllServices(mappedServices)
+				setError(null)
+			} catch (err) {
+				console.error("Error al cargar trámites y servicios:", err)
+				setError(
+					"Error al cargar trámites y servicios. Por favor, intente de nuevo más tarde."
+				)
+			} finally {
+				setInitialLoading(false)
+			}
+		}
+
+		fetchServices()
+	}, [activeFilter])
+
 	// Restablecer itemsToShow cuando cambia el filtro
 	useEffect(() => {
 		setItemsToShow(initialItemsToShow)
 	}, [activeFilter, initialItemsToShow])
 
-	// Datos de ejemplo para trámites y servicios
-	const servicesData: SecretaryServiceItem[] = [
-		{
-			id: "certificados-catastrales",
-			title: "Certificados Catastrales Entidades Externas",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/certificados-catastrales",
-		},
-		{
-			id: "impuesto-predial",
-			title: "Certificado impuesto predial unificado",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/impuesto-predial",
-		},
-		{
-			id: "exencion-pico-placa-1",
-			title: "Exención de pico y placa",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/exencion-pico-placa",
-		},
-		{
-			id: "validador-certificados",
-			title: "Validador de certificados catastrales",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/validador-certificados",
-		},
-		{
-			id: "exencion-pico-placa-2",
-			title: "Exención de pico y placa",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/exencion-pico-placa-2",
-		},
-		{
-			id: "exencion-pico-placa-3",
-			title: "Exención de pico y placa",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/exencion-pico-placa-3",
-		},
-		{
-			id: "plano-predio-catastral-1",
-			title: "Plano predio catastral",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/plano-predio-catastral-1",
-		},
-		{
-			id: "plano-predio-catastral-2",
-			title: "Plano predio catastral",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/plano-predio-catastral-2",
-		},
-		// Agregar algunos elementos adicionales para probar la funcionalidad de "Cargar más"
-		{
-			id: "certificado-nomenclatura-1",
-			title: "Certificado de nomenclatura",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/certificado-nomenclatura",
-		},
-		{
-			id: "certificado-nomenclatura-2",
-			title: "Certificado de nomenclatura urbana",
-			type: "tramite",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/tramites/certificado-nomenclatura-urbana",
-		},
-		{
-			id: "copia-planos-1",
-			title: "Copia de planos urbanísticos",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/copia-planos-urbanisticos",
-		},
-		{
-			id: "copia-planos-2",
-			title: "Copia de planos arquitectónicos",
-			type: "servicio",
-			description:
-				"Pago que todo propietario, poseedor o quien disfrute del bien ajeno, debe realizar sobre los bienes inmuebles...",
-			link: "/servicios/copia-planos-arquitectonicos",
-		},
-	]
+	// Mapear tipología a tipo
+	function mapTipologiaToType(tipologia: string): "tramite" | "servicio" {
+		if (tipologia === "servicio") {
+			return "servicio"
+		}
+		return "tramite" // Por defecto, considerar como trámite
+	}
 
-	// Filtramos los servicios según el filtro activo
-	const filteredServices = servicesData
-		.filter((item) => {
-			if (activeFilter === "todos") return true
-			if (activeFilter === "tramites") return item.type === "tramite"
-			if (activeFilter === "servicios") return item.type === "servicio"
-			return true
-		})
-		.sort((a, b) => {
-			if (sortOrder === "asc") {
-				return a.title.localeCompare(b.title)
-			} else {
-				return b.title.localeCompare(a.title)
-			}
-		})
+	// Generar el enlace adecuado según el tipo
+	function getItemLink(tipologia: string, id: number): string {
+		if (tipologia === "servicio") {
+			return `/servicios/servicio-${id}`
+		}
+		return `/tramites/tramite-${id}`
+	}
+
+	// Filtramos y ordenamos los servicios
+	const filteredServices = allServices.sort((a, b) => {
+		if (sortOrder === "asc") {
+			return a.title.localeCompare(b.title)
+		} else {
+			return b.title.localeCompare(a.title)
+		}
+	})
 
 	// Los elementos que se mostrarán según el estado actual
 	const visibleServices = filteredServices.slice(0, itemsToShow)
@@ -180,10 +141,10 @@ function SecretaryServices({
 
 	// Función para cargar más elementos
 	const handleLoadMore = () => {
-		// Simular carga desde el backend
+		// Mantener el comportamiento actual con un estado de carga
 		setIsLoading(true)
 
-		// Simular un retraso de red
+		// Simular un retraso de red (mantener el comportamiento existente)
 		setTimeout(() => {
 			setItemsToShow((prevCount) => prevCount + loadIncrement)
 			setIsLoading(false)
@@ -304,15 +265,37 @@ function SecretaryServices({
 				</div>
 			</div>
 
+			{/* Estado de carga inicial con SkeletonCard */}
+			{initialLoading && (
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+					{[...Array(8)].map((_, index) => (
+						<SkeletonCard key={`skeleton-${index}`} />
+					))}
+				</div>
+			)}
+
+			{/* Mensaje de error */}
+			{error && !initialLoading && (
+				<div className="bg-red-50 border-l-4 border-red-500 p-4 my-4">
+					<div className="flex">
+						<div className="ml-3">
+							<p className="text-sm text-red-700">{error}</p>
+						</div>
+					</div>
+				</div>
+			)}
+
 			{/* Grid de tarjetas de servicios/trámites */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-				{visibleServices.map((item) => (
-					<SecretaryServiceCard key={item.id} item={item} />
-				))}
-			</div>
+			{!initialLoading && !error && (
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+					{visibleServices.map((item) => (
+						<SecretaryServiceCard key={item.id} item={item} />
+					))}
+				</div>
+			)}
 
 			{/* Botón "Cargar más" - Solo se muestra si hay más elementos */}
-			{hasMoreItems && (
+			{!initialLoading && !error && hasMoreItems && (
 				<div className="mt-8 text-center">
 					<button
 						onClick={handleLoadMore}
@@ -342,10 +325,12 @@ function SecretaryServices({
 			)}
 
 			{/* Mostrar contador de resultados cuando hay elementos */}
-			<div className="mt-4 text-center text-sm text-govco-gray-600">
-				Mostrando {visibleServices.length} de {filteredServices.length}{" "}
-				resultados
-			</div>
+			{!initialLoading && !error && visibleServices.length > 0 && (
+				<div className="mt-4 text-center text-sm text-govco-gray-600">
+					Mostrando {visibleServices.length} de {filteredServices.length}{" "}
+					resultados
+				</div>
+			)}
 		</div>
 	)
 }

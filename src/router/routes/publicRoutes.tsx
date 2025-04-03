@@ -1,3 +1,5 @@
+// Archivo: /src/router/routes/publicRoutes.tsx
+
 import React from "react"
 import { RouteObject } from "react-router-dom"
 import { ROUTES } from "../../config/routes"
@@ -11,6 +13,8 @@ const NewsListPage = React.lazy(() => import("../../pages/NewsListPage"))
 const Reservation = React.lazy(
 	() => import("../../pages/ReservationPage/ReservationPage")
 )
+// Nuevo componente para el detalle de trámites
+const TramiteDetail = React.lazy(() => import("../../pages/TramiteDetail"))
 
 // Página 404 (Not Found)
 const NotFound = React.lazy(() =>
@@ -45,6 +49,11 @@ export const publicRoutes: RouteObject[] = [
 		path: ROUTES.SERVICIO_DETALLE.path,
 		element: <ServiceRoute />,
 	},
+	// Nueva ruta para detalle de trámite
+	{
+		path: "/tramites/:id",
+		element: <TramiteDetail />,
+	},
 	{
 		path: ROUTES.RESERVATION.path,
 		element: <Reservation />,
@@ -54,5 +63,9 @@ export const publicRoutes: RouteObject[] = [
 	{
 		path: ROUTES.NOT_FOUND.path,
 		element: <NotFound />,
+	},
+	{
+		path: "/servicios/:id",
+		element: <ServiceRoute />,
 	},
 ]

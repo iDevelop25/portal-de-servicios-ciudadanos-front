@@ -1,4 +1,3 @@
-// frontend/src/hooks/useFaqs.ts
 import { useState, useEffect } from "react"
 import useApi from "./useApi"
 import { FaqItem, CreateFaqData, UpdateFaqData } from "../types/faq.types"
@@ -24,14 +23,21 @@ export const useFaqs = () => {
 
 	/**
 	 * Obtiene todas las FAQs desde la API
-	 * El backend ya se encarga de enviar solo las FAQs activas y ordenadas
+	 * @param showInactiveItems - Si es true, trae todas las FAQs (activas e inactivas); si es false, solo las activas
 	 */
-	const getAllFaqs = async (): Promise<void> => {
+	const getAllFaqs = async (
+		showInactiveItems: boolean = false
+	): Promise<void> => {
 		setLoading(true)
 		setError(null)
 
 		try {
-			const response = await api.get<FaqItem[]>(FAQS_ENDPOINT)
+			// Agregar query param para incluir inactivas si es necesario
+			const endpoint = showInactiveItems
+				? `${FAQS_ENDPOINT}?includeInactive=true`
+				: `${FAQS_ENDPOINT}?includeInactive=false`
+
+			const response = await api.get<FaqItem[]>(endpoint)
 			if (response.success) {
 				setFaqs(response.data || [])
 			} else {
@@ -43,7 +49,7 @@ export const useFaqs = () => {
 			const apiError = error as ApiError
 			setError(apiError.message || "Error al conectar con el servidor")
 		} finally {
-			setLoading(false)
+			setLoading(false) // Asegurarse de que loading se establezca en false
 		}
 	}
 
@@ -67,7 +73,7 @@ export const useFaqs = () => {
 			setError(apiError.message || "Error al conectar con el servidor")
 			return null
 		} finally {
-			setLoading(false)
+			setLoading(false) // Asegurarse de que loading se establezca en false
 		}
 	}
 
@@ -86,8 +92,18 @@ export const useFaqs = () => {
 		try {
 			const response = await api.post<FaqItem>(FAQS_ENDPOINT, faqData)
 			if (response.success && response.data) {
-				// Actualizamos la lista de FAQs
-				await getAllFaqs()
+				// Actualizar datos sin establecer loading=true de nuevo
+				const currentShowAll = faqs.some((faq) => !faq.isActive)
+				const getResponse = await api.get<FaqItem[]>(
+					currentShowAll
+						? `${FAQS_ENDPOINT}?includeInactive=true`
+						: `${FAQS_ENDPOINT}?includeInactive=false`
+				)
+
+				if (getResponse.success) {
+					setFaqs(getResponse.data || [])
+				}
+
 				return response.data
 			} else {
 				setError(response.message || "Error al crear la pregunta frecuente")
@@ -98,7 +114,7 @@ export const useFaqs = () => {
 			setError(apiError.message || "Error al conectar con el servidor")
 			return null
 		} finally {
-			setLoading(false)
+			setLoading(false) // Asegurarse de que loading se establezca en false
 		}
 	}
 
@@ -121,8 +137,18 @@ export const useFaqs = () => {
 		try {
 			const response = await api.put<FaqItem>(`${FAQS_ENDPOINT}/${id}`, faqData)
 			if (response.success && response.data) {
-				// Actualizamos la lista de FAQs
-				await getAllFaqs()
+				// Actualizar datos sin establecer loading=true de nuevo
+				const currentShowAll = faqs.some((faq) => !faq.isActive)
+				const getResponse = await api.get<FaqItem[]>(
+					currentShowAll
+						? `${FAQS_ENDPOINT}?includeInactive=true`
+						: `${FAQS_ENDPOINT}?includeInactive=false`
+				)
+
+				if (getResponse.success) {
+					setFaqs(getResponse.data || [])
+				}
+
 				return response.data
 			} else {
 				setError(
@@ -135,7 +161,7 @@ export const useFaqs = () => {
 			setError(apiError.message || "Error al conectar con el servidor")
 			return null
 		} finally {
-			setLoading(false)
+			setLoading(false) // Asegurarse de que loading se establezca en false
 		}
 	}
 
@@ -150,8 +176,18 @@ export const useFaqs = () => {
 		try {
 			const response = await api.delete<void>(`${FAQS_ENDPOINT}/${id}`)
 			if (response.success) {
-				// Actualizamos la lista de FAQs
-				await getAllFaqs()
+				// Actualizar datos sin establecer loading=true de nuevo
+				const currentShowAll = faqs.some((faq) => !faq.isActive)
+				const getResponse = await api.get<FaqItem[]>(
+					currentShowAll
+						? `${FAQS_ENDPOINT}?includeInactive=true`
+						: `${FAQS_ENDPOINT}?includeInactive=false`
+				)
+
+				if (getResponse.success) {
+					setFaqs(getResponse.data || [])
+				}
+
 				return true
 			} else {
 				setError(response.message || "Error al eliminar la pregunta frecuente")
@@ -162,7 +198,49 @@ export const useFaqs = () => {
 			setError(apiError.message || "Error al conectar con el servidor")
 			return false
 		} finally {
-			setLoading(false)
+			setLoading(false) // Asegurarse de que loading se establezca en false
+		}
+	}
+
+	/**
+	 * Elimina permanentemente una FAQ (hard delete)
+	 * Se utiliza para eliminar definitivamente FAQs que ya están inactivas
+	 */
+	const permanentDeleteFaq = async (id: number): Promise<boolean> => {
+		setLoading(true)
+		setError(null)
+
+		try {
+			const response = await api.delete<void>(
+				`${FAQS_ENDPOINT}/${id}/permanent`
+			)
+			if (response.success) {
+				// Actualizar datos sin establecer loading=true de nuevo
+				const currentShowAll = faqs.some((faq) => !faq.isActive)
+				const getResponse = await api.get<FaqItem[]>(
+					currentShowAll
+						? `${FAQS_ENDPOINT}?includeInactive=true`
+						: `${FAQS_ENDPOINT}?includeInactive=false`
+				)
+
+				if (getResponse.success) {
+					setFaqs(getResponse.data || [])
+				}
+
+				return true
+			} else {
+				setError(
+					response.message ||
+						"Error al eliminar permanentemente la pregunta frecuente"
+				)
+				return false
+			}
+		} catch (error) {
+			const apiError = error as ApiError
+			setError(apiError.message || "Error al conectar con el servidor")
+			return false
+		} finally {
+			setLoading(false) // Asegurarse de que loading se establezca en false
 		}
 	}
 
@@ -193,9 +271,61 @@ export const useFaqs = () => {
 		}
 	}
 
-	// Cargar FAQs al montar el componente
+	/**
+	 * Cambia el estado activo de una FAQ (activar/desactivar)
+	 */
+	const toggleActiveStatus = async (
+		id: number,
+		isCurrentlyActive: boolean
+	): Promise<boolean> => {
+		try {
+			const result = await updateFaq(id, { isActive: !isCurrentlyActive })
+			return !!result
+		} catch {
+			return false
+		}
+	}
+
+	// Cargar FAQs al montar el componente, solo las activas por defecto
 	useEffect(() => {
-		getAllFaqs()
+		let isMounted = true // Para evitar problemas con componentes desmontados
+
+		const loadData = async () => {
+			setLoading(true)
+			setError(null)
+
+			try {
+				const endpoint = `${FAQS_ENDPOINT}?includeInactive=false`
+				const response = await api.get<FaqItem[]>(endpoint)
+
+				// Solo actualizar el estado si el componente sigue montado
+				if (isMounted) {
+					if (response.success) {
+						setFaqs(response.data || [])
+					} else {
+						setError(
+							response.message || "Error al obtener las preguntas frecuentes"
+						)
+					}
+				}
+			} catch (error) {
+				if (isMounted) {
+					const apiError = error as ApiError
+					setError(apiError.message || "Error al conectar con el servidor")
+				}
+			} finally {
+				if (isMounted) {
+					setLoading(false)
+				}
+			}
+		}
+
+		loadData()
+
+		// Función de limpieza para cuando el componente se desmonte
+		return () => {
+			isMounted = false
+		}
 	}, [])
 
 	return {
@@ -207,8 +337,10 @@ export const useFaqs = () => {
 		createFaq,
 		updateFaq,
 		deleteFaq,
+		permanentDeleteFaq,
 		toggleFaq,
 		toggleFaqStatus,
+		toggleActiveStatus,
 	}
 }
 

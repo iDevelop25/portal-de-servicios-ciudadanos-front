@@ -1,10 +1,13 @@
-// /Users/johannesmoreno/Downloads/portal-servicios-ciudadanos/frontend/src/components/home/HomeHero/HomeHero.tsx
+// /components/home/HomeHero/HomeHero.tsx
 import { useState, useEffect, useRef } from "react"
 import { Search } from "lucide-react"
 import { searchService } from "../../../services/searchService"
 import { SearchResult } from "../../../types/search.types"
+import { useNavigate } from "react-router-dom"
 
 function HomeHero() {
+	const navigate = useNavigate()
+
 	// Usamos imágenes temporales que ya sabemos que funcionan
 	const slides = [
 		"https://www.bogota.gov.co/sites/default/files/styles/1050px/public/2020-01/plaza-de-bolivar.jpg",
@@ -45,7 +48,7 @@ function HomeHero() {
 		}
 	}, [])
 
-	// Simulación de búsqueda predictiva
+	// Búsqueda predictiva
 	useEffect(() => {
 		const delayDebounce = setTimeout(async () => {
 			if (searchQuery.length >= 2) {
@@ -84,8 +87,11 @@ function HomeHero() {
 	const handleResultSelect = (result: SearchResult) => {
 		setSearchQuery(result.title)
 		setShowResults(false)
-		// Aquí podrías redirigir al usuario o realizar otra acción
-		console.log("Seleccionado:", result)
+
+		// Redirigir al usuario a la URL proporcionada por el resultado
+		if (result.url) {
+			navigate(result.url)
+		}
 	}
 
 	// Manejar envío del formulario
@@ -93,7 +99,10 @@ function HomeHero() {
 		e.preventDefault()
 		if (searchQuery.trim()) {
 			console.log("Búsqueda enviada:", searchQuery)
-			// Aquí implementarías la navegación a la página de resultados
+			// Si hay resultados disponibles, navegar al primero
+			if (searchResults.length > 0 && searchResults[0].url) {
+				navigate(searchResults[0].url)
+			}
 		}
 	}
 

@@ -38,7 +38,7 @@ export const env = {
 	 */
 	RESERVATION_URL:
 		(import.meta.env.VITE_APP_RESERVATION_URL as string) ||
-		"https://10.101.5.111:4433",
+		"http://130.213.189.134:8082/",
 
 	/**
 	 * Indica si se debe mostrar la guía para el certificado SSL
