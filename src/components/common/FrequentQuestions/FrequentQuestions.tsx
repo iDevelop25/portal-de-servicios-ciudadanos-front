@@ -86,7 +86,7 @@ function FrequentQuestions({
 								key={faq.id}
 								// Se elimina el borde por defecto (usando border-transparent) y se agrega un outline azul cuando está expandida.
 								className={`rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border border-transparent ${
-									faq.isOpen ? "outline outline-2 outline-blue-500" : ""
+									faq.isOpen ? "outline-1 outline-blue-500" : ""
 								}`}
 							>
 								{/* Pregunta (cabecera del acordeón) */}
