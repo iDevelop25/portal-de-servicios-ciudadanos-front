@@ -14,7 +14,7 @@ class GroupService {
 	async getGroups(): Promise<ServiceGroup[]> {
 		try {
 			// Usar la ruta del proxy
-			const response = await axios.get<ServiceGroup[]>("/api/master/group")
+			const response = await axios.get<ServiceGroup[]>(this.getApiBaseUrl())
 
 			// Verificamos si la respuesta es válida
 			if (response.status === 200 && Array.isArray(response.data)) {

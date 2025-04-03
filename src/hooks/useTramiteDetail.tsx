@@ -1,37 +1,50 @@
-// src/hooks/useTramiteDetail.tsx
+// src/hooks/useTramiteDetail.ts
 import { useState, useEffect } from "react"
-import axios from "axios"
+import { tramitesService, TramiteItem } from "../services/tramitesService"
 
 /**
- * Hook para obtener la información detallada de un trámite desde la API.
- * @param id Número identificador del trámite.
- * @returns { data, loading, error } donde data contiene la información del trámite.
+ * Hook personalizado para obtener detalles de un trámite
+ * @param id ID único del trámite
+ * @returns Objeto con datos del trámite, estado de carga y error
  */
-export default function useTramiteDetail(id: number) {
-	const [data, setData] = useState<any | null>(null)
+function useTramiteDetail(id: number) {
+	const [data, setData] = useState<TramiteItem | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
-		async function fetchTramite() {
-			setLoading(true)
+		const fetchTramiteDetail = async () => {
 			try {
-				// Se consume el endpoint con el id del trámite
-				const response = await axios.get(
-					`http://10.101.5.61:8082/api/master/tramites/${id}`
-				)
-				setData(response.data)
+				setLoading(true)
+				const tramiteData = await tramitesService.getTramiteById(id)
+
+				if (tramiteData) {
+					setData(tramiteData)
+					setError(null)
+				} else {
+					setError("No se pudo encontrar información para este trámite")
+				}
 			} catch (err) {
-				console.error("Error al obtener el trámite:", err)
-				setError("No se pudo cargar la información del trámite.")
+				const errorMessage =
+					err instanceof Error
+						? err.message
+						: "Error al cargar los detalles del trámite"
+				console.error(`Error al obtener detalles del trámite ${id}:`, err)
+				setError(errorMessage)
 			} finally {
 				setLoading(false)
 			}
 		}
+
 		if (id) {
-			fetchTramite()
+			fetchTramiteDetail()
+		} else {
+			setError("ID de trámite no válido")
+			setLoading(false)
 		}
 	}, [id])
 
 	return { data, loading, error }
 }
+
+export default useTramiteDetail

@@ -6,6 +6,8 @@ import { getRoutePath } from "../../config/routes"
 import useTramiteDetail from "../../hooks/useTramiteDetail"
 import ReadMore from "../../components/common/ReadMore"
 import defaultTramiteImage from "../../assets/images/top/default.png"
+import TramiteRating from "../../components/common/TramiteRating"
+import TramiteShare from "../../components/common/TramiteShare"
 
 // Opcional: Mapear IDs de trámites a imágenes específicas
 const tramiteImages: Record<number, string> = {
@@ -221,6 +223,28 @@ function TramiteDetail() {
 								</div>
 							</div>
 						</motion.div>
+
+						{/* Nueva sección para valoración y compartir */}
+						<div className="px-6 py-8 bg-gray-50 border-t border-gray-200">
+							<div className="w-16 h-1 bg-yellow-400 mx-auto mb-6"></div>
+							<h3 className="text-xl font-semibold text-center mb-6">
+								Tu opinión es importante
+							</h3>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+								{/* Componente de valoración */}
+								<TramiteRating
+									tramiteId={numericId}
+									title={tramiteDetail.nombreDeLaOferta}
+								/>
+
+								{/* Componente para compartir */}
+								<TramiteShare
+									tramiteId={numericId}
+									title={tramiteDetail.nombreDeLaOferta}
+								/>
+							</div>
+						</div>
 					</>
 				)}
 			</div>

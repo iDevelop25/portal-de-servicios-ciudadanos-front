@@ -1,5 +1,4 @@
-// Archivo: /src/pages/TramiteDetail/index.ts
-
+// src/pages/TramiteDetail/index.ts
 /**
  * Exporta el componente TramiteDetail como exportación por defecto
  */

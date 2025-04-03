@@ -1,3 +1,5 @@
+// Actualiza este archivo en: frontend/src/services/tramitesService.ts
+
 import axios from "axios"
 
 // Usar la URL base directamente para evitar los problemas de tipado
@@ -17,6 +19,15 @@ export interface TramiteItem {
 	productoFinal?: string
 	tieneCosto?: string
 	urlTramiteLinea?: string
+
+	// Campos adicionales que se están utilizando en TramiteDetail
+	proposito?: string
+	gtengaEnCuenta?: string
+	grequisitoPn?: string
+	grequisitoPj?: string
+	gdescripcionDonde?: string
+	gdescripcionPago?: string
+	gpuntosDeAtencion?: string
 }
 
 export interface TramitesApiResponse {
